@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
@@ -8,7 +7,6 @@ import useAuthProvider from "../hooks/useAuthProvider";
 const Login = () => {
   const navigate = useNavigate();
   const { login, responseMessage } = useAuthProvider();
-  const token = localStorage.getItem("token");
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues: {
       email: "",
@@ -26,29 +24,7 @@ const Login = () => {
     }),
   });
   console.log(responseMessage);
-  // const loginUser = async (values: { email: string; password: string }) => {
-  //   try {
-  //     const response = await axios.post("http://localhost:9001/login", {
-  //       email: values.email,
-  //       password: values.password,
-  //     });
-  //     console.log(response.data.token);
-  //     localStorage.setItem("token", response.data.token);
-  //     setResponseMessage({
-  //       message: "Login Successful",
-  //       isSuccess: true,
-  //     });
-  //     setTimeout(() => {
-  //       navigate("/dashboard");
-  //     }, 1000);
-  //   } catch (error) {
-  //     console.log(error.response.data.message);
-  //     setResponseMessage({
-  //       message: error.response.data.message,
-  //       isSuccess: false,
-  //     });
-  //   }
-  // };
+
 
   const InputField =
     "rounded-md h-10 mb-4 w-full p-2 border-[1px] border-slate-500";

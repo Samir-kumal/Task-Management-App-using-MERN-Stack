@@ -3,7 +3,6 @@ import SignoutIcon from './svgs/SignoutIcon';
 import { useNavigate } from 'react-router-dom';
 import ProfileIcon from './svgs/ProfileIcon';
 import useAuthProvider from '../hooks/useAuthProvider';
-import { replace } from 'formik';
 
 const UserProfileDropDown = () => {
     const navigate = useNavigate();

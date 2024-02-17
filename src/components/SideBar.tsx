@@ -1,4 +1,4 @@
-import {  useState } from "react";
+import { useState } from "react";
 import Button from "./Button";
 import useAuthProvider from "../hooks/useAuthProvider";
 import useDataProvider from "../hooks/useDataProvider";
@@ -8,17 +8,6 @@ import CreateBoard from "./Common/CreateBoardModal";
 import UserProfileDropDown from "./UserProfileDropDown";
 import EditIcon from "./svgs/EditIcon";
 import UpdateBoardModal from "./Common/UpdateBoardModal";
-
-interface Task {
-  title: string;
-  description: string;
-  status: string;
-}
-interface Board {
-  title: string;
-  tasks: Task[];
-  _id: string;
-}
 
 const SideBar = () => {
   const [visible, setVisible] = useState(true);
@@ -34,7 +23,6 @@ const SideBar = () => {
   const token = localStorage.getItem("token");
   const { data, setBoardID, getTaskData } = useDataProvider();
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
-
 
   const handleCreateBoardClick = async () => {
     setcreateModelVisible(true);

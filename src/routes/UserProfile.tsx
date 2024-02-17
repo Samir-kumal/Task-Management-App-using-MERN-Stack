@@ -82,7 +82,7 @@ const UserProfile = () => {
         setTimeout(() => {
           navigate("/login");
         }, 500);
-      } catch (error) {
+      } catch (error:AxiosError | any) {
         console.log(error.response.data.message);
         setResponseMessage({
           message: error.response.data.message,
@@ -161,7 +161,6 @@ const UserProfile = () => {
     touched,
     handleChange,
     handleBlur,
-    handleSubmit,
   } = useFormik({
     initialValues: {
       username: username && username,

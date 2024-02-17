@@ -21,6 +21,7 @@ interface UserDataProps {
   _id: string;
   userName: string;
   userId: string;
+  userEmail: string;
   iat: number;
   exp: number;
 }
