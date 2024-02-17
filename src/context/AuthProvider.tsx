@@ -39,6 +39,9 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   useEffect(() => {
     getUserData();
   }, []);
+
+
+// Function to get user data
   const getUserData = async () => {
     if (token) {
       try {
@@ -58,6 +61,8 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     localStorage.clear();
     setUser(null);
   };
+
+  // Function to login user
   const login = async (values: { email: string; password: string }) => {
     try {
       const response = await axios.post("http://localhost:9001/login", {

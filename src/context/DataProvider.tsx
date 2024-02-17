@@ -52,6 +52,9 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   const [boardID, setBoardID] = useState<string>("");
   const { user } = useAuthProvider();
   console.log(user);
+
+
+  // This function creates the board and updates the state with the new board data
   const createBoard = async (boardName: string) => {
     try {
       if (user) {
@@ -72,6 +75,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       console.log(error);
     }
   };
+  // This function updates the board and updates the state with the new board data
   const updateBoard = async (boardID: string, boardName: string) => {
     try {
       if (user !== null && token !== null && boardID !== "" && boardName !== "") { 
@@ -92,6 +96,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       console.log(error);
     }
   };
+  // This function deletes the board and updates the state with the new board data
   const deleteBoard = async (boardID: string) => {
     try {
       const response = await axios.delete(`${URL}/deleteBoard/${boardID}`, {
@@ -135,6 +140,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
     }
   };
 
+  // This function gets the board data and updates the state with the new board data
   const getBoardData = async () => {
     if (user && token) {
       try {
@@ -156,6 +162,8 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       }
     }
   };
+
+  // This function deletes the task and updates the state with the new task data
   const deleteTask = async (taskID: string, token: string) => {
     try {
       const response = await axios.delete(`${URL}/deleteTask/${taskID}`, {
@@ -194,7 +202,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       console.log(error);
     }
   };
-
+ // This function gets the task data and updates the state with the new task data
   const getTaskData = async (boardID: string, token: string) => {
     if (user) {
       try {
