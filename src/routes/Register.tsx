@@ -4,6 +4,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
 import axios, { AxiosError } from "axios";
+import { URL } from "../context/AuthProvider";
 
 interface ResponseMessageType {
   message: string;
@@ -51,7 +52,7 @@ const Register = () => {
     password: string;
   }) => {
     try {
-      const response = await axios.post("http://localhost:9001/register", {
+      const response = await axios.post(`${URL}/register`, {
         name: values.username,
         email: values.email,
         password: values.password,

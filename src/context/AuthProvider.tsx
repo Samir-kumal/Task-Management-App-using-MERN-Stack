@@ -28,7 +28,8 @@ interface UserDataProps {
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 const token = localStorage.getItem("token");
-export const URL = "http://localhost:9001";
+// export const URL = "http://localhost:9001";
+export const URL = "https://backend-service-for-task-management.onrender.com";
 const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataProps | null>(null);
   const [responseMessage, setResponseMessage] = useState({
@@ -66,7 +67,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   // Function to login user
   const login = async (values: { email: string; password: string }) => {
     try {
-      const response = await axios.post("http://localhost:9001/login", {
+      const response = await axios.post(`${URL}/login`, {
         email: values.email,
         password: values.password,
       });
