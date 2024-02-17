@@ -17,7 +17,7 @@ const NavBar = () => {
             className="h-10 w-10"
           />
         </div>
-        <h1 className="font-bold text-[24px] font-mono ">
+        <h1 className="font-bold lg:text-[24px] font-mono ">
           Task Management App
         </h1>
       </div>
@@ -29,7 +29,11 @@ const NavBar = () => {
           }`}
           onClick={() => setModalVisible(true)}
         >
-          + Add new Task
+          <p className="lg:flex md:flex sm:flex xs:flex hidden">
+            {" "}
+            + Add new Task
+          </p>
+          <p className="xs:hidden sm:hidden md:hidden lg:hidden flex">+Add</p>
         </Button>
       </div>
       {modalVisible && <CreateTaskModal setModalVisible={setModalVisible} />}

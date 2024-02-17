@@ -12,8 +12,7 @@ import UserProfile from "./routes/UserProfile.tsx";
 import Root from "./routes/root.tsx";
 import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
 
-const token = localStorage.getItem("token");
-
+// handle routing for the app
 const router = createBrowserRouter([
   {
     path: "/",
@@ -52,7 +51,7 @@ const router = createBrowserRouter([
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <AuthProvider>
+    <AuthProvider>    
       <DataProvider>
         <RouterProvider router={router} />
       </DataProvider>

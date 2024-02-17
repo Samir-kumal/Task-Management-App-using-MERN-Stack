@@ -1,14 +1,10 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import Button from "./Button";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import useAuthProvider from "../hooks/useAuthProvider";
 import useDataProvider from "../hooks/useDataProvider";
 import ToggleIconClose from "./Common/ToggleIconClose";
 import ToggleIconOpen from "./Common/ToggleIconOpen";
 import CreateBoard from "./Common/CreateBoardModal";
-import SignoutIcon from "./svgs/SignoutIcon";
-import ProfileIcon from "./svgs/ProfileIcon";
 import UserProfileDropDown from "./UserProfileDropDown";
 import EditIcon from "./svgs/EditIcon";
 import UpdateBoardModal from "./Common/UpdateBoardModal";
@@ -32,23 +28,18 @@ const SideBar = () => {
   const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
   const [isHovered, setIsHovered] = useState(false);
   const { user } = useAuthProvider();
-  const navigate = useNavigate();
   const handleToggle = () => {
-    console.log("Toggle");
     setVisible((previous) => !previous);
   };
   const token = localStorage.getItem("token");
   const { data, setBoardID, getTaskData } = useDataProvider();
-  const [selectedBoard, setSelectedBoard] = useState<Board | null>(null);
+  const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
 
-  if (data) {
-    console.log(data);
-  }
 
   const handleCreateBoardClick = async () => {
     setcreateModelVisible(true);
   };
-  const handleUpdateBoardClick = async (title) => {
+  const handleUpdateBoardClick = async (title: string) => {
     setupdateModelVisible(true);
     setSelectedBoard(title);
   };

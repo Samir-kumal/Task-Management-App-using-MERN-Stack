@@ -4,6 +4,8 @@ const Root = () => {
   const navigate = useNavigate();
   const location = useLocation();
 
+  // This function Redirects to login page if the user is not logged in
+
   useEffect(()=>{
     if (location.pathname === "/") {
         navigate("/login");

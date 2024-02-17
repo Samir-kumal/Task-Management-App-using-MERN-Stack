@@ -33,7 +33,7 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
       // createBoard(values.title);
       const { title, content, status } = values;
       console.log("boardID", boardID);
-      updateTask(selectedTask._id, title, content, status, token);
+      updateTask(selectedTask._id, title, content, status, token !==null ? token : "" );
 
       setModalVisible(false);
     },

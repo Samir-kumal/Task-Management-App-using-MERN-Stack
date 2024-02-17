@@ -74,7 +74,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   };
   const updateBoard = async (boardID: string, boardName: string) => {
     try {
-      if (user) {
+      if (user !== null && token !== null && boardID !== "" && boardName !== "") { 
         const response = await axios.put(
           `${URL}/updateBoard/${boardID}`,
           {
@@ -125,7 +125,6 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
         }
       );
       const data = response.data;
-      console.log("task data", data);
       if (!boardID) {
         getTaskData(data[0]._id, token);
       } else {

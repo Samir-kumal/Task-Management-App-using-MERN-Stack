@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { SetStateAction, useEffect, useState } from "react";
 import Button from "../components/Button";
 import useAuthProvider from "../hooks/useAuthProvider";
 import ProfileIcon from "../components/svgs/ProfileIcon";
@@ -7,10 +7,11 @@ import EditIcon from "../components/svgs/EditIcon";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import axios from "axios";
+import axios,{AxiosError} from "axios";
 import { URL } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
-import DeleteIcon from "../components/svgs/deleteIcon";
+import DeleteIcon from "../components/svgs/DeleteIcon";
+
 const token = localStorage.getItem("token");
 
 const UserProfile = () => {
@@ -28,6 +29,8 @@ const UserProfile = () => {
   useEffect(() => {
     getUserData();
   }, []);
+
+  //function to validate user password
   const validateUserPassword = async () => {
     if (token && email) {
       try {
@@ -45,7 +48,7 @@ const UserProfile = () => {
         console.log(data);
 
         updateUserPassword();
-      } catch (error) {
+      } catch (error:AxiosError | any) {
         console.log(error.response.data.message);
         setResponseMessage({
           message: error.response.data.message,
@@ -54,6 +57,8 @@ const UserProfile = () => {
       }
     }
   };
+
+  //function to update user password
   const updateUserPassword = async () => {
     if (token && email) {
       try {
@@ -87,12 +92,15 @@ const UserProfile = () => {
     }
   };
   console.log(email, token);
+
+  // function to update user name
   const updateUserName = async () => {
     if (!token && !email) {
       console.error("token and email not found");
       return;
     }
     try {
+      console.log("clicked 2");
       const response = await axios.put(
         `${URL}/updateUserName`,
         {
@@ -110,32 +118,42 @@ const UserProfile = () => {
         isSuccess: true,
       });
       logout();
-        setTimeout(() => {
-            navigate("/login",{replace:true});
-        }, 500);
-    } catch (error) {
+      setTimeout(() => {
+        navigate("/login", { replace: true });
+      }, 500);
+    } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
     }
   };
+
+
+  // function to delete user
   const deleteUser = async () => {
     if (token && email) {
       try {
-        const response = await axios.delete(`${URL}/deleteUser`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.delete(
+          `${URL}/deleteUser`,
+
+          {
+            headers: { Authorization: `Bearer ${token}` },
+            data: { email: email },
+          }
+        );
         const data = response.data;
         console.log(data);
-
+          alert(data.message)
         logout();
         setTimeout(() => {
           navigate("/login");
         }, 500);
-      } catch (error) {
+      } catch (error: AxiosError | any) {
         console.log(error.response.data.message);
       }
     }
   };
 
+
+  // formik form for user profile update
   const {
     values,
     initialValues,
@@ -163,14 +181,14 @@ const UserProfile = () => {
   });
   const options = ["Account", "Security"];
   console.log(user);
-  const handleClick = (index) => {
+  const handleClick = (index: SetStateAction<number>) => {
     console.log("clicked");
     setSelectedIndex(index);
     setIsFormInput(false);
   };
   return (
-    <div className="bg-primary/10 flex flex-row h-lvh w-lvw">
-      <div className="w-1/4 border-r-2 border-black/10 h-full bg-white flex flex-col gap-y-2 items-center">
+    <div className="bg-primary/10 flex lg:flex-row md:flex-row flex-col h-lvh w-lvw">
+      <div className="md:w-1/4 w-full border-r-2 border-black/10 md:h-full bg-white flex flex-col gap-y-2 items-center">
         <div className="w-full  flex flex-col items-center mt-20">
           {options.map((item, index) => (
             <Button
@@ -180,21 +198,25 @@ const UserProfile = () => {
                 index === selectedIndex ? "bg-black/10" : "bg-white"
               } w-10/12 mx-2 rounded-lg flex flex-row items-center justify-center p-2 gap-x-2 text-black`}
             >
-              {index === 0 ? <ProfileIcon /> : <SecurityIcon />}
+              {index === 0 ? <ProfileIcon /> : <SecurityIcon />}   
               {item}
             </Button>
+                                            //  Change the icon based on Index.
           ))}
         </div>
       </div>
       <div className="flex flex-col items-start relative justify-center w-full h-screen">
         <div className="absolute top-10 left-8">
-          <h1 className="text-6xl "> Account</h1>
+          <h1 className="lg:text-6xl md:text-5xl text-4xl "> Account</h1>
           <h2 className="text-lg text-black/30">
             Manage Your Account Information
           </h2>
         </div>
         <div className="absolute right-0 bottom-0 bg-red-500 text-white rounded-md m-2">
-          <Button style="text-sm flex items-center ">
+          <Button
+            onClick={() => deleteUser()}
+            style="text-sm flex items-center "
+          >
             <DeleteIcon />
             Delete User
           </Button>
@@ -202,7 +224,7 @@ const UserProfile = () => {
         {selectedIndex === 0 ? (
           <section className=" flex flex-col  items-end">
             <form className="bg-white p-4 rounded-lg flex flex-col shadow-lg h-42 ml-6">
-              <h1 className="text-2xl font-bold mb-8">
+              <h1 className="md:text-2xl text-xl font-bold mb-8">
                 User Account Information
               </h1>
               <label htmlFor="username" className="">
@@ -373,6 +395,7 @@ const UserProfile = () => {
                   Update
                 </Button>
               )}
+              
               <Button
                 onClick={() => {
                   setIsFormInput(!isFormInput);

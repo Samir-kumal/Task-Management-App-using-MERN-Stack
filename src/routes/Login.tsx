@@ -16,7 +16,6 @@ const Login = () => {
     },
     onSubmit: (values) => {
       login(values);
-     
     },
 
     validationSchema: Yup.object({
@@ -55,11 +54,11 @@ const Login = () => {
     "rounded-md h-10 mb-4 w-full p-2 border-[1px] border-slate-500";
   const InputFieldError =
     "rounded-md h-10 mb-4 w-full p-2 border-[1px] border-red-500";
-  const LoginButton = "rounded-md h-10 mb-4 w-full bg-slate-500 text-white";
+  const LoginButton = "rounded-md h-10 mb-4 w-full bg-primary text-white";
 
   return (
     <div className="flex flex-row items-center justify-center h-[100vh] w-full bg-slate-300">
-      <div className="BoxContainer w-1/3 h-fit py-6 bg-white shadow-lg rounded-md ">
+      <div className="BoxContainer lg:w-1/3 md:w-1/2 w-[300px] h-fit py-6 bg-white shadow-lg rounded-md ">
         <h2 className="text-2xl font-bold text-left px-4 mb-4">
           Welcome to Task Management System!
         </h2>
@@ -118,17 +117,14 @@ const Login = () => {
             </p>
           )}
 
-          <a href="#" className="text-right text-sm w-full opacity-60">
-            Forgot Password?
-          </a>
-
+        
           <button type="submit" className={LoginButton}>
             Login
           </button>
           <p className="text-xs">OR</p>
           <button
             onClick={() => navigate("/register")}
-            className=" text-md text-center w-full opacity-60"
+            className=" text-md text-center w-full opacity-60 font-bold"
           >
             Register
           </button>

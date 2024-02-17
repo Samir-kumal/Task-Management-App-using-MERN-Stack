@@ -6,8 +6,9 @@ import useDataProvider from "../../hooks/useDataProvider";
 
 interface CreateBoardModalProps {
   setModelVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedBoard: string;
-}
+  selectedBoard: string | null;
+  };
+
 
 const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
   setModelVisible,
@@ -17,11 +18,14 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
   const { values, handleSubmit, handleBlur, handleChange, errors, touched } =
     useFormik({
       initialValues: {
-        title: selectedBoard,
+        title: selectedBoard ?? "",
       },
       onSubmit: (values) => {
-        updateBoard(boardID, values.title);
+        if( values.title){
+            updateBoard(boardID,values.title);
         setModelVisible(false);
+
+        }
       },
       validationSchema: Yup.object({
         title: Yup.string().required("Board name is required"),
@@ -31,15 +35,16 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
   const formInputError = "border-2 p-2 w-full rounded-md border-red-500 my-3";
   return (
     <div className="inset-0 bg-black/40 absolute w-lvw  h-[100vh] overflow-hidden flex justify-center  ">
-      <div className="w-1/3 rounded-lg h-1/3 bg-white mt-2 flex flex-col items-center">
+      <div className="lg:w-1/3 md:w-1/2 min-w-[300px] rounded-lg h-fit pb-6 bg-white mt-2 flex flex-col items-center">
         <div className="flex flex-row p-2 justify-between w-11/12 items-center">
-          <h2 className="p-2 text-xl font-bold w-10/12 ">Update board</h2>
+          <h2 className="p-2  md:text-lg text-lg font-bold w-10/12 ">
+            Update board
+          </h2>
           <Button
             style="rounded-md p-1 text-xs bg-red-500 text-white mx-2"
             onClick={() => {
               if (boardID) {
                 deleteBoard(boardID);
-                
               }
               setModelVisible(false);
             }}
@@ -48,7 +53,7 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
           </Button>
           <Button
             onClick={() => setModelVisible(false)}
-            style="p-2 h-8 flex items-center justify-center rounded-md text-xs"
+            style="p-2 h-8 flex items-center justify-center bg-primary text-white rounded-md text-xs"
           >
             Close
           </Button>
@@ -72,7 +77,7 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
             }
           />
           <ErrorTextComponent touched={touched.title} errors={errors.title} />
-          <Button type="submit" style="w-full rounded-md">
+          <Button type="submit" style="w-full rounded-md bg-primary text-white">
             Update
           </Button>
         </form>

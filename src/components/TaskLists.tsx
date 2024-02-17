@@ -1,43 +1,64 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import TaskBox from "./Common/TaskBox";
 import useDataProvider from "../hooks/useDataProvider";
-import CreateTaskModal from "./Common/TaskModal";
 import UpdateTaskModal from "./Common/UpdateTaskModal";
 
+interface Task {
+  _id: string; // Assuming _id is a string
+  status: string; // Assuming status is a string
+}
+
+interface TasksByStatus {
+  [status: string]: Task[];
+}
+
 const TaskList = () => {
-  const [tasksByStatus, setTasks] = useState<any[] | null>([]);
+  const [tasksByStatus, setTasks] = useState<TasksByStatus | null>(null);
   const { tasksData } = useDataProvider();
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedTask, setSelectedTask] = useState(null);
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
   useEffect(() => {
-    const newTasks =
-      tasksData &&
-      tasksData.reduce((acc, task) => {
-        acc[task.status] = acc[task.status] || [];
-        acc[task.status].push(task);
-        return acc;
-      }, {});
-    setTasks(newTasks);
+    const newTasks: TasksByStatus = {};
+    if (tasksData) {
+      tasksData.forEach((task: Task) => {
+        const { status } = task;
+        if (!newTasks[status]) {
+          newTasks[status] = [];
+        }
+        newTasks[status].push(task);
+      });
+
+      Object.keys(newTasks).forEach((status) => {
+        newTasks[status].sort((a, b) => {
+          const order = { todo: 0, doing: 1, done: 2 };
+          return order[a.status] - order[b.status];
+        });
+      });
+  
+      setTasks(newTasks);
+    }
   }, [tasksData]);
 
-  const handleClick = (task) => {
+  const handleClick = (task: Task) => {
     setModalVisible(true);
-    console.log(task);
     setSelectedTask(task);
   };
+
   return (
     <>
       <div className="w-full  h-[calc(100vh-4rem)] overflow-y-scroll grid lg:grid-cols-3 gap-x-4 md:grid-cols-2 grid-cols-1">
-        {Object.entries(tasksByStatus).length > 0 ? (
+        {tasksByStatus &&
           Object.entries(tasksByStatus).map(([status, tasks]) => (
             <div key={status} className="w-full pt-2 ">
               <div className="flex flex-row items-center jutify-center px-4">
                 <div
                   className={`h-3 w-3 rounded-full ${
-                    (status.toString() === "todo" && "bg-red-500") ||
-                    (status.toString() === "doing" && "bg-orange-500") ||
-                    (status.toString() === "done" && "bg-green-500")
+                    status === "todo"
+                      ? "bg-red-500"
+                      : status === "doing"
+                      ? "bg-orange-500"
+                      : "bg-green-500"
                   }`}
                 ></div>
                 <h2 className="font-semibold text-lg px-3 font-sans">
@@ -54,10 +75,7 @@ const TaskList = () => {
                 ))}
               </ul>
             </div>
-          ))
-        ) : (
-          <div className=" p-2">No tasks are assigned to this board</div>
-        )}
+          ))}
       </div>
       {modalVisible && (
         <UpdateTaskModal
