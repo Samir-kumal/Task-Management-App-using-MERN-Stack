@@ -1,16 +1,9 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import React, { createContext, useState, useEffect } from "react";
 
-interface User {
-  userId: any;
-  _id: string;
-  userName: string;
-  userEmail: string;
-  createdAt: string;
-  updatedAt: string;
-}
+
 export interface AuthContextProps {
-  user: User | null;
+  user: UserDataProps | null;
   responseMessage: ResponseMessageType | null;
   logout: () => void;
   login: (values: { email: string; password: string }) => void;
@@ -79,7 +72,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
       });
 
       window.location.replace("/dashboard");
-    } catch (error) {
+    } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
       setResponseMessage({
         message: error.response.data.message,

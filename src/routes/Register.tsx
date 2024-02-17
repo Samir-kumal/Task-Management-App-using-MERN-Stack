@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 
 interface ResponseMessageType {
   message: string;
@@ -64,7 +64,7 @@ const Register = () => {
       setTimeout(() => {
         navigate("/login");
       }, 1000);
-    } catch (error) {
+    } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
       setResponseMessage({
         message: error.response.data.message,
