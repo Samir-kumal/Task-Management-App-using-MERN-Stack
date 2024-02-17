@@ -1,30 +1,34 @@
-# React + TypeScript + Vite
+## Full Stack Task Management System
+### This is a full stack task management system that allows users to create, read, update, and delete tasks. The system is built using the MERN stack (MongoDB, Express, React, Node.js). The backend is built using Node.js and Express, and the frontend is built using React. The database used is MongoDB. 
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Features
+- Create, read, update, and delete tasks
+- Create, read, update, and delete boards
+- User authentication
+- User authorization
+- User profile update
+- User password reset
+- User account deletion
 
-Currently, two official plugins are available:
+## Technologies
+- MongoDB
+- Express
+- React
+- Node.js
+- JSON Web Tokens
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
-```
-
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+## Installation
+1. Clone the repository
+2. Install the dependencies
+3. Create a .env file in the root directory and add the following environment variables:
+    - MONGODB_URI
+    - JWT_SECRET
+    - JWT_EXPIRES_IN
+    - JWT_COOKIE_EXPIRES_IN
+    - EMAIL_USERNAME
+    - EMAIL_PASSWORD
+    - EMAIL_HOST
+    - EMAIL_PORT
+    - EMAIL_FROM
+4. Run the server
+5. Run the client
