@@ -30,13 +30,14 @@ const TaskList = () => {
         }
         newTasks[status].push(task);
       });
-
+      
       Object.keys(newTasks).forEach((status) => {
         newTasks[status].sort((a, b) => {
           const order = { todo: 0, doing: 1, done: 2 };
-          return order[a.status] - order[b.status];
+          return order[a.status as keyof typeof order] - order[b.status as keyof typeof order];
         });
       });
+      
   
       setTasks(newTasks);
     }
