@@ -20,15 +20,6 @@
 ## Installation
 1. Clone the repository
 2. Install the dependencies
-3. Create a .env file in the root directory and add the following environment variables:
-    - MONGODB_URI
-    - JWT_SECRET
-    - JWT_EXPIRES_IN
-    - JWT_COOKIE_EXPIRES_IN
-    - EMAIL_USERNAME
-    - EMAIL_PASSWORD
-    - EMAIL_HOST
-    - EMAIL_PORT
-    - EMAIL_FROM
+3. Add the end point to the url https://backend-service-for-task-management.onrender.com
 4. Run the server
 5. Run the client
