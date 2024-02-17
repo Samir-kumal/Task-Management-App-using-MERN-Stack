@@ -3,9 +3,11 @@ import TaskBox from "./Common/TaskBox";
 import useDataProvider from "../hooks/useDataProvider";
 import UpdateTaskModal from "./Common/UpdateTaskModal";
 
-interface Task {
-  _id: string; // Assuming _id is a string
-  status: string; // Assuming status is a string
+export interface Task {
+  _id: string; 
+  status: string; 
+  title: string;
+  content: string;
 }
 
 interface TasksByStatus {

@@ -1,9 +1,13 @@
+import { Task } from "../TaskLists";
+
 interface TaskBoxProps {
   task: {
+    _id: string;
+    status: string;
     title: string;
     content: string;
   };
-  handleClick: (task: { title: string; content: string }) => void;
+  handleClick: (task: Task) => void;
 
 }
 

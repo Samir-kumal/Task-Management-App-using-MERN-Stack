@@ -7,7 +7,7 @@ import { Task } from "../../context/DataProvider";
 
 interface TaskModalProps {
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  selectedTask: Task;
+  selectedTask: Task | null;
 }
 const UpdateTaskModal: React.FC<TaskModalProps> = ({
   setModalVisible,
@@ -25,15 +25,17 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
     touched,
   } = useFormik({
     initialValues: {
-      title: selectedTask.title,
-      content: selectedTask.content,
-      status: selectedTask.status,
+      title: selectedTask?.title,
+      content: selectedTask?.content,
+      status: selectedTask?.status,
     },
     onSubmit: (values) => {
       // createBoard(values.title);
       const { title, content, status } = values;
       console.log("boardID", boardID);
-      updateTask(selectedTask._id, title, content, status, token !==null ? token : "" );
+      if(selectedTask?._id && title && content && status){
+        updateTask(selectedTask._id, title, content, status, token !==null ? token : "" );   
+      }
 
       setModalVisible(false);
     },
@@ -45,7 +47,7 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
     }),
   });
   const handleTaskDelete = () => {
-    if (selectedTask._id && token) {
+    if (selectedTask?._id && token) {
       deleteTask(selectedTask._id, token);
     }
     setModalVisible(false);
