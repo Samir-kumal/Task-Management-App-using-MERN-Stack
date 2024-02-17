@@ -14,6 +14,7 @@ const Login = () => {
     },
     onSubmit: (values) => {
       login(values);
+      navigate("/dashboard");
     },
 
     validationSchema: Yup.object({

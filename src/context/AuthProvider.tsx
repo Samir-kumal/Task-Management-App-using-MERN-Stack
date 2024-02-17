@@ -78,7 +78,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
         isSuccess: true,
       });
 
-      window.location.replace("/dashboard");
+      // window.location.replace("/dashboard");
     } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
       setResponseMessage({
