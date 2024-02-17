@@ -62,7 +62,7 @@ const TaskList = () => {
                   }`}
                 ></div>
                 <h2 className="font-semibold text-lg px-3 font-sans">
-                  {status}
+                  {status.charAt(0).toUpperCase() + status.slice(1)}
                 </h2>
               </div>
               <ul>
