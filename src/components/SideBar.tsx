@@ -2,8 +2,8 @@ import { useState } from "react";
 import Button from "./Button";
 import useAuthProvider from "../hooks/useAuthProvider";
 import useDataProvider from "../hooks/useDataProvider";
-import ToggleIconClose from "./Common/ToggleIconClose";
-import ToggleIconOpen from "./Common/ToggleIconOpen";
+import ToggleIconClose from "./svgs/ToggleIconClose";
+import ToggleIconOpen from "./svgs/ToggleIconOpen";
 import CreateBoard from "./Common/CreateBoardModal";
 import UserProfileDropDown from "./UserProfileDropDown";
 import EditIcon from "./svgs/EditIcon";
@@ -44,7 +44,7 @@ const SideBar = () => {
             All boards ({data?.length})
           </h1>
           <div className="h-60 overflow-scroll ">
-            {data ? (
+            {data && data.length >0 ? (
               data.map((board, index) => (
                 <div
                   onMouseEnter={() => {
@@ -85,12 +85,21 @@ const SideBar = () => {
                 </div>
               ))
             ) : (
-              <div>loading....</div>
+              <div className=" flex flex-row items-center justify-center gap-x-2">
+
+
+<div
+  className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-solid border-primary border-r-transparent align-[-0.125em] motion-reduce:animate-[spin_1.5s_linear_infinite]"
+  role="status">
+  
+</div>
+<p className="text-xs">Loading</p>
+              </div>
             )}
           </div>
           <div className="w-full  flex flex-row justify-center">
             <Button
-              style="w-11/12 m h-fit bg-primary/60 rounded-md shadow-xl text-white"
+              style="w-11/12 m h-fit bg-primary/70 font-bold  rounded-md shadow-xl text-white"
               onClick={handleCreateBoardClick}
             >
               Create new board
@@ -117,7 +126,7 @@ const SideBar = () => {
         style="absolute -right-6 top-1/4 rounded-full"
         onClick={handleToggle}
       >
-        {visible ? <ToggleIconClose /> : <ToggleIconOpen />}
+        {visible ? <ToggleIconClose height={30} width={30} /> : <ToggleIconOpen height={30} width={30} />}
       </Button>
 
       {createModelVisible && (
