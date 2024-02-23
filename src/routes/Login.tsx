@@ -2,19 +2,42 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import useAuthProvider from "../hooks/useAuthProvider";
+import useLogin from "../hooks/useLogin";
+import { useState } from "react";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login, responseMessage } = useAuthProvider();
+  const { login } = useLogin();
+  const [responseMessage, setResponseMessage] = useState({
+    message: "",
+    isSuccess: undefined as boolean | undefined,
+  });
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues: {
       email: "",
       password: "",
     },
-    onSubmit: (values) => {
-      login(values);
-      navigate("/dashboard");
+    onSubmit: async (values) => {
+      const loginUser = await login(values.email, values.password);
+      if (loginUser === true) {
+        setResponseMessage({
+          message: "Login Successful",
+          isSuccess: true,
+        });
+        setTimeout(() => {
+          navigate("/dashboard", { replace: true });
+        }, 1500);
+      } else if (loginUser === "User not found") {
+        setResponseMessage({
+          message: "User Not Found, Please Register",
+          isSuccess: false,
+        });
+      } else if (loginUser === "Invalid credentials") {
+        setResponseMessage({
+          message: "Invalid Credentials",
+          isSuccess: false,
+        });
+      }
     },
 
     validationSchema: Yup.object({
@@ -24,8 +47,6 @@ const Login = () => {
       password: Yup.string().required("Password is required"),
     }),
   });
-  console.log(responseMessage);
-
 
   const InputField =
     "rounded-md h-10 mb-4 w-full p-2 border-[1px] border-slate-500";
@@ -94,7 +115,6 @@ const Login = () => {
             </p>
           )}
 
-        
           <button type="submit" className={LoginButton}>
             Login
           </button>

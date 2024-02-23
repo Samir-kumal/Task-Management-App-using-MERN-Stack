@@ -8,12 +8,14 @@ const UserProfileDropDown = () => {
     const navigate = useNavigate();
     const {logout} = useAuthProvider();
   return (
-    <div className="bg-black/10 rounded-lg absolute h-fit w-11/12 mx-2 -top-24 shadow-2xl">
+    <div className="bg-primary/40 rounded-lg absolute h-fit w-11/12 mx-2 -top-28 shadow-2xl">
     <Button
-      style="w-full bg-black/5 text-black/50 flex flex-row justify-center gap-x-2 text-sm hover:bg-black/10"
+      style="w-full bg-black/5 text-black/90 border-b-2 border-black/10 py-4 flex flex-row justify-center gap-x-2 text-sm hover:bg-black/10"
       onClick={() => {
         logout();
-        navigate("/login",{replace:true});
+        setTimeout(()=>{
+          navigate("/login",{replace:true});
+      },2000)
       }}
     >
       <div>
@@ -22,11 +24,9 @@ const UserProfileDropDown = () => {
       Signout
     </Button>
     <Button
-      style="w-full bg-black/5 text-black/50 text-sm flex flex-row items-center justify-center gap-x-2 hover:bg-black/10"
+      style="w-full bg-black/5 text-black/90 text-sm flex flex-row items-center justify-center gap-x-2 hover:bg-black/10"
       onClick={() => {
-        //   localStorage.removeItem("token");
-        //   window.location.reload();
-        navigate("/profile");
+        navigate("/profile")
       }}
     >
       <div>

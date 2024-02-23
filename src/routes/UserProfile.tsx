@@ -118,9 +118,12 @@ const UserProfile = () => {
         isSuccess: true,
       });
       logout();
-      setTimeout(() => {
-        navigate("/login", { replace: true });
-      }, 500);
+      if(!token){
+        setTimeout(() => {
+          navigate("/login", { replace: true });
+        }, 1000);
+      }
+      
     } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
     }
@@ -216,7 +219,7 @@ const UserProfile = () => {
             onClick={() => deleteUser()}
             style="text-sm flex items-center "
           >
-            <DeleteIcon />
+            <DeleteIcon fill="#fff" height={20} width={20} />
             Delete User
           </Button>
         </div>
