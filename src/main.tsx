@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, } from "react-router-dom";
 import Login from "./routes/Login.tsx";
 import ErrorPage from "./error-page.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
@@ -9,14 +9,13 @@ import Register from "./routes/Register.tsx";
 import AuthProvider from "./context/AuthProvider.tsx";
 import DataProvider from "./context/DataProvider.tsx";
 import UserProfile from "./routes/UserProfile.tsx";
-import Root from "./routes/root.tsx";
-import ProtectedRoutes from "./routes/ProtectedRoutes.tsx";
+import ProtectedRoute from "./routes/ProtectedRoutes.tsx";
 
 // handle routing for the app
 const router = createBrowserRouter([
   {
     path: "/",
-    element: <Root />,
+    element: <Login />,
     errorElement: <ErrorPage />,
   },
   {
@@ -30,23 +29,23 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
   },
   {
-    path: "/dashboard",
-    element: (
-      <ProtectedRoutes>
-        <Dashboard />
-      </ProtectedRoutes>
-    ),
-    errorElement: <ErrorPage />,
-  },
-  {
-    path: "/profile",
-    element: (
-      <ProtectedRoutes>
-        <UserProfile />
-      </ProtectedRoutes>
-    ),
-    errorElement: <ErrorPage />,
-  },
+    element: <ProtectedRoute />,
+    children:[
+
+      {
+        path: "/dashboard",
+        element: <Dashboard />,
+        errorElement: <ErrorPage />,
+      },
+      {
+        path: "/profile",
+        element: <UserProfile />,
+        errorElement: <ErrorPage />,
+      },
+    ]
+
+  }
+  
 ]);
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
