@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import "./index.css";
-import { createBrowserRouter, RouterProvider, } from "react-router-dom";
+import { createBrowserRouter, RouterProvider, useNavigate,redirect, Outlet } from "react-router-dom";
 import Login from "./routes/Login.tsx";
 import ErrorPage from "./error-page.tsx";
 import Dashboard from "./routes/Dashboard.tsx";
@@ -42,8 +42,16 @@ const router = createBrowserRouter([
         element: <UserProfile />,
         errorElement: <ErrorPage />,
       },
-    ]
-
+    ],
+    loader:async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+     return redirect("/login"); 
+      }else{
+        return <Outlet />;
+      };
+    
+    },
   }
   
 ]);
