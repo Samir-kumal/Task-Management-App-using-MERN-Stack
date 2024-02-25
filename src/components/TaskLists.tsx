@@ -79,7 +79,7 @@ const TaskList = () => {
                 ))}
             </div>
           </>
-        ) : tasksData && tasksData.length === 0 && tasksData !== null ? (
+        ) : tasksData  && tasksData !== null ? (
           <div className="w-full h-full flex justify-center items-start py-20">
             <LoadingComponent />
           </div>
