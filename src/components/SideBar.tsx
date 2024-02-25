@@ -42,11 +42,13 @@ const SideBar = () => {
 
   return (
     <div
-      className={` h-[calc(100vh-4rem)] overflow  bg-white shadow-2xl relative transition-all ${
-        visible ? "w-60" : "w-0"
+      className={` h-[calc(100vh-4rem)] overflow  bg-white shadow-2xl relative transition-all duration-300 ${
+        visible ? "w-80" : "w-0 "
       }`}
     >
-      <div className="overflow-hidden flex flex-col  justify-between h-full">
+      <div className={`overflow-hidden ${
+        visible ? "w-full" : "opacity-0 w-0 "
+      }   flex flex-col transition-all duration-300  justify-between h-full`}>
         <div className="">
           <h1 className="font-semibold text-lg font-sans pb-4 px-2">
             All boards ({data?.length})
