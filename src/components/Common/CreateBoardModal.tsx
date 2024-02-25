@@ -28,7 +28,7 @@ const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
   const formInput = "border-2 p-2 w-full rounded-md border-black/60 my-3";
   const formInputError = "border-2 p-2 w-full rounded-md border-red-500 my-3";
   return (
-    <div className="inset-0 bg-black/40 absolute w-lvw  h-[100vh] overflow-hidden flex justify-center  ">
+    <div className="inset-0 bg-black/40 z-10 absolute w-lvw  h-[100vh] overflow-hidden flex justify-center  ">
       <div className="lg:w-1/3 md:w-1/2 min-w-[300px] rounded-lg h-fit pb-6 bg-white  mt-2 flex flex-col items-center">
         <div className="flex flex-row p-2 justify-between w-11/12 items-center">
           <h2 className="p-2 text-xl font-bold w-10/12 ">Create New board</h2>
