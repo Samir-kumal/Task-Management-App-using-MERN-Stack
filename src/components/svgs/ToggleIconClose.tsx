@@ -2,7 +2,6 @@ import { ToggleIconProps } from "./ToggleIconOpen";
 import { memo } from "react";
 const ToggleIconClose: React.FC<ToggleIconProps> = memo(
   ({ height, width, fill }) => {
-    console.log("ToggleIconClose");
     return (
       <svg
         xmlns="http://www.w3.org/2000/svg"

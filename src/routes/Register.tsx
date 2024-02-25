@@ -38,11 +38,7 @@ const Register = () => {
     }),
     onSubmit: (values) => {
       registerUser(values);
-      //   if(responseMessage.isSuccess){
-      //     setTimeout(()=>{
-      //         navigate("/login")
-      //     })
-      //   }
+     
     },
   });
 
@@ -63,7 +59,7 @@ const Register = () => {
         isSuccess: true,
       });
       setTimeout(() => {
-        navigate("/login");
+        navigate("/login",{replace:true});
       }, 1000);
     } catch (error:AxiosError | any) {
       console.log(error.response.data.message);

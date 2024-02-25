@@ -26,7 +26,7 @@ const Login = () => {
         });
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
-        }, 1500);
+        }, 2000);
       } else if (loginUser === "User not found") {
         setResponseMessage({
           message: "User Not Found, Please Register",

@@ -14,17 +14,17 @@ const NavBar = () => {
           <img
             src="https://img.icons8.com/ios/452/task.png"
             alt="task"
-            className="h-10 w-10"
+            className="h-6 w-6"
           />
         </div>
-        <h1 className="font-bold lg:text-[24px] font-mono ">
+        <h1 className="font-bold lg:text-[16px] font-mono ">
           Task Management App
         </h1>
       </div>
       <div>
         <Button
           disabled={!boardID}
-          style={`rounded-full text-sm p-3 ${
+          style={`rounded-full text-xs p-3 ${
             !boardID ? "bg-black/50" : "bg-primary text-white"
           }`}
           onClick={() => setModalVisible(true)}

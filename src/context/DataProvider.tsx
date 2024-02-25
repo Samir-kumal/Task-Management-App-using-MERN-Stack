@@ -1,5 +1,5 @@
-import axios from "axios";
-import { createContext, useEffect, useState } from "react";
+import axios, { AxiosError } from "axios";
+import { createContext, useCallback, useEffect, useState } from "react";
 import { URL } from "./AuthProvider";
 import useAuthProvider from "../hooks/useAuthProvider";
 import { getTasksData } from "../helper/getTasksData";
@@ -47,8 +47,8 @@ const token = localStorage.getItem("token");
 export const DataContext = createContext<DataContextValue | null>(null);
 
 const DataProvider: React.FC<childrenProps> = ({ children }) => {
-  const [data, setData] = useState<Data[]>([]);
-  const [tasksData, setTasksData] = useState<Task[]>([]);
+  const [data, setData] = useState<Data[] | null>([]);
+  const [tasksData, setTasksData] = useState<Task[] | null>([]);
   const [boardID, setBoardID] = useState<string>("");
   const { user } = useAuthProvider();
   console.log(user);
@@ -75,6 +75,31 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       console.log(error);
     }
   };
+  // This function gets the board data and updates the state with the new board data
+  const getBoardData = useCallback( async () => {
+    if (user && token) {
+      try {
+        const response = await axios.get(`${URL}/boards/${user?.userId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const data = response.data;
+        console.log(response);
+        setData(data);
+
+        if (data.length > 0 && boardID.length === 0) {
+          setBoardID(data[0]?._id);
+          getTaskData(data[0]?._id, token);
+        } else if (boardID.length > 0) {
+          getTaskData(boardID, token);
+        } else if (data.length === 0) {
+          setData([]);
+        }
+      } catch (error) {
+        console.log(error);
+        setData(null);
+      }
+    }
+  },[user, boardID]);
   // This function updates the board and updates the state with the new board data
   const updateBoard = async (boardID: string, boardName: string) => {
     try {
@@ -139,26 +164,16 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       console.log(error);
     }
   };
-
-  // This function gets the board data and updates the state with the new board data
-  const getBoardData = async () => {
-    if (user && token) {
+  const getTaskData = async (boardID: string, token: string) => {
+    if (user) {
       try {
-        const response = await axios.get(`${URL}/boards/${user?.userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = response.data;
-        console.log(data);
-        setData(data);
-
-        if (data && boardID.length === 0) {
-          getTaskData(data[0]?._id, token);
-          setBoardID(data[0]?._id);
-        } else if (boardID.length > 0) {
-          getTaskData(boardID, token);
-        }
+        const data = await getTasksData(boardID, token);
+        console.log("task data", data);
+        setTasksData(data);
       } catch (error) {
         console.log(error);
+        console.log("error occurred in the task data")
+        setTasksData(null);
       }
     }
   };
@@ -172,7 +187,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       const data = response.data;
       console.log(data);
       getTaskData(boardID, token);
-    } catch (error) {
+    } catch (error: AxiosError | any) {
       console.log(error);
     }
   };
@@ -198,22 +213,12 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       const data = response.data;
       console.log(data);
       getTaskData(boardID, token);
-    } catch (error) {
+    } catch (error: AxiosError | any) {
       console.log(error);
     }
   };
  // This function gets the task data and updates the state with the new task data
-  const getTaskData = async (boardID: string, token: string) => {
-    if (user) {
-      try {
-        const data = await getTasksData(boardID, token);
-        console.log("task data", data);
-        setTasksData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-  };
+  
   useEffect(() => {
     getBoardData();
   }, [user]);

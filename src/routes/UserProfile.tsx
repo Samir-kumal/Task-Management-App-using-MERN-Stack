@@ -1,4 +1,4 @@
-import { SetStateAction, useEffect, useState } from "react";
+import { SetStateAction, useCallback, useEffect, useState } from "react";
 import Button from "../components/Button";
 import useAuthProvider from "../hooks/useAuthProvider";
 import ProfileIcon from "../components/svgs/ProfileIcon";
@@ -25,9 +25,13 @@ const UserProfile = () => {
   const { user, logout, getUserData } = useAuthProvider();
   const username = user?.userName;
   const email = user?.userEmail;
-
-  useEffect(() => {
+  const memoisedUserData = useCallback(() => {
     getUserData();
+  
+  },[getUserData]);
+  useEffect(() => {
+    
+    memoisedUserData();
   }, []);
 
   //function to validate user password
@@ -80,8 +84,8 @@ const UserProfile = () => {
         });
         logout();
         setTimeout(() => {
-          navigate("/login");
-        }, 500);
+          navigate("/login", {replace:true});
+        }, 1500);
       } catch (error:AxiosError | any) {
         console.log(error.response.data.message);
         setResponseMessage({
@@ -117,12 +121,7 @@ const UserProfile = () => {
         message: data.message,
         isSuccess: true,
       });
-      logout();
-      if(!token){
-        setTimeout(() => {
-          navigate("/login", { replace: true });
-        }, 1000);
-      }
+      getUserData();
       
     } catch (error:AxiosError | any) {
       console.log(error.response.data.message);
@@ -147,8 +146,8 @@ const UserProfile = () => {
           alert(data.message)
         logout();
         setTimeout(() => {
-          navigate("/login");
-        }, 500);
+          navigate("/login",{replace:true});
+        }, 2000);
       } catch (error: AxiosError | any) {
         console.log(error.response.data.message);
       }
@@ -277,6 +276,7 @@ const UserProfile = () => {
             <div className="flex w-full justify-end">
               {isFormInput && (
                 <Button
+                type="submit"
                   onClick={() => {
                     updateUserName();
                     console.log("clicked");

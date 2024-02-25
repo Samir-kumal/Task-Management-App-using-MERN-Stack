@@ -5,7 +5,6 @@ export interface AuthContextProps {
   user: UserDataProps | null;
   responseMessage: ResponseMessageType | null;
   logout: () => void;
-  login: (values: { email: string; password: string }) => void;
   getUserData: () => void;
   isLoggedIn: boolean;
 }
@@ -27,8 +26,8 @@ interface UserDataProps {
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 const token = localStorage.getItem("token");
-// export const URL = "http://localhost:9001";
-export const URL = "https://backend-service-for-task-management.onrender.com";
+export const URL = "http://localhost:9001";
+// export const URL = "https://backend-service-for-task-management.onrender.com";
 const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataProps | null>(null);
   const [responseMessage, setResponseMessage] = useState({
@@ -43,7 +42,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
 
 // Function to get user data
-  const getUserData = async () => {
+  const getUserData =  async () => {
     if (token) {
       try {
         const response = await axios.get(`${URL}/getUser`, {
@@ -53,7 +52,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
         console.log(data.data);
         setUser(data.data);
         localStorage.setItem("user", JSON.stringify(data.data.userId));
-      } catch (error) {
+      } catch (error: AxiosError | any) {
         console.log(error);
       }
     }
@@ -67,32 +66,11 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     })
   };
 
-  // Function to login user
-  const login = async (values: { email: string; password: string }) => {
-    try {
-      const response = await axios.post(`${URL}/login`, {
-        email: values.email,
-        password: values.password,
-      });
-      console.log(response.data.token);
-      localStorage.setItem("token", response.data.token);
-      setResponseMessage({
-        message: "Login Successful",
-        isSuccess: true,
-      });
-      getUserData();
-      // window.location.replace("/dashboard");
-    } catch (error:AxiosError | any) {
-      console.log(error.response.data.message);
-      setResponseMessage({
-        message: error.response.data.message,
-        isSuccess: false,
-      });
-    }
-  };
+ 
+
   return (
     <AuthContext.Provider
-      value={{ user, logout, login, responseMessage, getUserData, isLoggedIn }}
+      value={{ user, logout, responseMessage, getUserData, isLoggedIn }}
     >
       {children}
     </AuthContext.Provider>

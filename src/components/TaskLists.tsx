@@ -1,47 +1,25 @@
-import { useEffect, useState } from "react";
+import {  useState } from "react";
 import TaskBox from "./Common/TaskBox";
 import useDataProvider from "../hooks/useDataProvider";
 import UpdateTaskModal from "./Common/UpdateTaskModal";
+import LoadingComponent from "./Common/LoadingComponent";
 
 export interface Task {
-  _id: string; 
-  status: string; 
+  _id: string;
+  status: string;
   title: string;
   content: string;
 }
 
-interface TasksByStatus {
-  [status: string]: Task[];
-}
 
 const TaskList = () => {
-  const [tasksByStatus, setTasks] = useState<TasksByStatus | null>(null);
   const { tasksData } = useDataProvider();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
 
-  useEffect(() => {
-    const newTasks: TasksByStatus = {};
-    if (tasksData) {
-      tasksData.forEach((task: Task) => {
-        const { status } = task;
-        if (!newTasks[status]) {
-          newTasks[status] = [];
-        }
-        newTasks[status].push(task);
-      });
-      
-      Object.keys(newTasks).forEach((status) => {
-        newTasks[status].sort((a, b) => {
-          const order = { todo: 0, doing: 1, done: 2 };
-          return order[a.status as keyof typeof order] - order[b.status as keyof typeof order];
-        });
-      });
-      
-  
-      setTasks(newTasks);
-    }
-  }, [tasksData]);
+  console.log(tasksData ?? tasksData);
+
+ 
 
   const handleClick = (task: Task) => {
     setModalVisible(true);
@@ -50,35 +28,66 @@ const TaskList = () => {
 
   return (
     <>
-      <div className="w-full  h-[calc(100vh-4rem)] overflow-y-scroll grid lg:grid-cols-3 gap-x-4 md:grid-cols-2 grid-cols-1">
-        {tasksByStatus &&
-          Object.entries(tasksByStatus).map(([status, tasks]) => (
-            <div key={status} className="w-full pt-2 ">
+      <div className="w-full  h-[calc(100vh-4rem)] overflow-y-scroll px-4 grid lg:grid-cols-3 gap-x-4 md:grid-cols-2 grid-cols-1">
+        {tasksData ? (
+          <>
+            <div className="">
               <div className="flex flex-row items-center jutify-center px-4">
-                <div
-                  className={`h-3 w-3 rounded-full ${
-                    status === "todo"
-                      ? "bg-red-500"
-                      : status === "doing"
-                      ? "bg-orange-500"
-                      : "bg-green-500"
-                  }`}
-                ></div>
-                <h2 className="font-semibold text-lg px-3 font-sans">
-                  {status.charAt(0).toUpperCase() + status.slice(1)}
-                </h2>
+                <div className={`h-3 w-3 rounded-full ${"bg-red-500"}`}></div>
+                <h2 className="font-semibold text-lg px-3 font-sans">Todo</h2>
               </div>
-              <ul>
-                {tasks.map((task) => (
+              {tasksData
+                .filter((task: Task) => task.status === "todo")
+                .map((task: Task) => (
                   <TaskBox
                     handleClick={handleClick}
                     key={task._id}
                     task={task}
                   />
                 ))}
-              </ul>
             </div>
-          ))}
+            <div className="">
+              <div className="flex flex-row items-center jutify-center px-4">
+                <div
+                  className={`h-3 w-3 rounded-full ${"bg-yellow-500"}`}
+                ></div>
+                <h2 className="font-semibold text-lg px-3 font-sans">Doing</h2>
+              </div>
+              {tasksData
+                .filter((task: Task) => task.status === "doing")
+                .map((task: Task) => (
+                  <TaskBox
+                    handleClick={handleClick}
+                    key={task._id}
+                    task={task}
+                  />
+                ))}
+            </div>
+            <div className="">
+              <div className="flex flex-row items-center jutify-center px-4">
+                <div className={`h-3 w-3 rounded-full ${"bg-green-500"}`}></div>
+                <h2 className="font-semibold text-lg px-3 font-sans">Done</h2>
+              </div>
+              {tasksData
+                .filter((task: Task) => task.status === "done")
+                .map((task: Task) => (
+                  <TaskBox
+                    handleClick={handleClick}
+                    key={task._id}
+                    task={task}
+                  />
+                ))}
+            </div>
+          </>
+        ) : tasksData && tasksData.length === 0 && tasksData !== null ? (
+          <div className="w-full h-full flex justify-center items-start py-20">
+            <LoadingComponent />
+          </div>
+        ) : (
+          <div className="w-full h-full flex justify-center  items-start py-20 ">
+            No tasks found Create a new task
+          </div>
+        )}
       </div>
       {modalVisible && (
         <UpdateTaskModal

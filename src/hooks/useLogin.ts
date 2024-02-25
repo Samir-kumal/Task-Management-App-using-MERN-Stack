@@ -1,5 +1,4 @@
 import axios, { AxiosError } from "axios";
-import { useState } from "react";
 import useAuthProvider from "./useAuthProvider";
 import { URL } from "../context/AuthProvider";
 const useLogin = () => {
@@ -13,9 +12,13 @@ const useLogin = () => {
       });
       console.log(response.data.token);
       localStorage.setItem("token", response.data.token);
-     
-      getUserData();
-      return true;
+     const token = localStorage.getItem("token");
+      if(token){
+        getUserData();
+        console.log("returned true")
+        return true;
+
+      }
     } catch (error: AxiosError | any) {
       console.log(error.response.data.message);
       return error.response.data.message;
