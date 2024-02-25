@@ -8,7 +8,7 @@ const NavBar = () => {
   const { boardID } = useDataProvider();
 
   return (
-    <div className="h-16 w-full shadow-2xl flex flex-row justify-between px-3 items-center">
+    <div className="h-16 w-full bg-blue-100/50  border-b-2 border-black/5 flex flex-row justify-between px-3 items-center">
       <div className="flex flex-row items-center">
         <div>
           <img
@@ -18,7 +18,7 @@ const NavBar = () => {
           />
         </div>
         <h1 className="font-bold lg:text-[16px] font-mono ">
-          Task Management App
+        TaskFlow
         </h1>
       </div>
       <div>
