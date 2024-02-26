@@ -3,10 +3,17 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 const Loading = () => {
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
   useEffect(() => {
-    setTimeout(() => {
-      navigate("/login", { replace: true });
-    }, 3000);
+    if (token) {
+      setTimeout(() => {
+        navigate("/dashboard", { replace: true });
+      }, 3000);
+    } else {
+      setTimeout(() => {
+        navigate("/login", { replace: true });
+      }, 3000);
+    }
   }, []);
   return (
     <div className="h-lvh  w-lvw bg-white flex flex-row items-center justify-center">
@@ -15,9 +22,7 @@ const Loading = () => {
         loop
         src="https://lottie.host/9a68572d-aca6-44a2-92f3-09b0a9249570/03YthDAahM.json"
         style={{ height: "300px", width: "300px" }}
-      >
-       
-      </Player>
+      ></Player>
     </div>
   );
 };
