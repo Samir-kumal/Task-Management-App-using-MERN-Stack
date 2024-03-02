@@ -1,34 +1,43 @@
-import axios, { AxiosError } from "axios";
 import { createContext, useCallback, useEffect, useState } from "react";
-import { URL } from "./AuthProvider";
 import useAuthProvider from "../hooks/useAuthProvider";
-import { getTasksData } from "../helper/getTasksData";
+import { createBoard } from "../utils/data/boards/createBoard";
+import { getBoards } from "../utils/data/boards/getBoards";
+import { updateBoard } from "../utils/data/boards/updateBoard";
+import { deleteBoard } from "../utils/data/boards/deleteBoard";
+import { createTask } from "../utils/data/tasks/createTask";
+import { getTasks } from "../utils/data/tasks/getTasks";
+import { deleteTask } from "../utils/data/tasks/deleteTask";
+import { updateTask } from "../utils/data/tasks/updateTask";
+import { getAllTasks } from "../utils/data/tasks/getAllTasks";
 interface DataContextValue {
   data: Data[] | null;
   tasksData: Task[] | null;
+  allTasks: Task[] | null;
   boardID: string;
-  createBoard: (boardName: string) => Promise<void>;
-  updateBoard: (boardID: string, boardName: string) => Promise<void>;
-  deleteBoard: (boardID: string) => Promise<void>;
-  createTask: (
+  createBoardItem: (boardName: string) => Promise<void>;
+  updateBoardItem: (boardID: string, boardName: string) => Promise<void>;
+  deleteBoardItem: (boardID: string) => Promise<void>;
+  createTaskItem: (
     boardID: string,
     title: string,
     content: string,
     status: string,
     token: string
   ) => Promise<void>;
-  deleteTask: (taskID: string, token: string) => Promise<void>;
-  updateTask: (
+  deleteTaskItem: (taskID: string, token: string) => Promise<void>;
+  updateTaskItem: (
     taskID: string,
     title: string,
     content: string,
     status: string,
     token: string
   ) => Promise<void>;
-  getTaskData: (boardID: string, token: string) => Promise<void>;
+  getTaskItems: (boardID: string, token: string) => Promise<void>;
+  getAllTaskItems: (token: string) => Promise<void>;
   setBoardID: (boardID: string) => void;
+  setTasksData: (tasksData: Task[]) => void;
 }
-interface Data {
+export interface Data {
   _id: string;
   title: string;
   tasks: string[];
@@ -40,187 +49,139 @@ export interface Task {
   status: string;
 }
 
-interface childrenProps {
+export interface childrenProps {
   children: React.ReactNode;
 }
-const token = localStorage.getItem("token");
 export const DataContext = createContext<DataContextValue | null>(null);
 
 const DataProvider: React.FC<childrenProps> = ({ children }) => {
   const [data, setData] = useState<Data[] | null>([]);
-  const [tasksData, setTasksData] = useState<Task[] | null>([]);
+  const [tasksData, setTasksData] = useState<Task[]>([]);
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [boardID, setBoardID] = useState<string>("");
-  const { user } = useAuthProvider();
-  console.log(user);
-
+  const { user,token } = useAuthProvider();
 
   // This function creates the board and updates the state with the new board data
-  const createBoard = async (boardName: string) => {
-    try {
-      if (user) {
-        const response = await axios.post(
-          `${URL}/createBoard/${user?.userId}`,
-          {
-            title: boardName,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = response.data;
-        console.log(data);
-        getBoardData();
+
+  const createBoardItem = async (boardName: string) => {
+    if (user && token) {
+      const result = await createBoard(boardName, token, user);
+      console.log(result?.data);
+      if (result?.data && result.success === true) {
+        getBoardItems();
       }
-    } catch (error) {
-      console.log(error);
     }
   };
   // This function gets the board data and updates the state with the new board data
-  const getBoardData = useCallback( async () => {
+  const getBoardItems = useCallback(async () => {
     if (user && token) {
-      try {
-        const response = await axios.get(`${URL}/boards/${user?.userId}`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = response.data;
-        console.log(response);
+      const result = await getBoards(user, token);
+      if (result?.data && result.success === true) {
+        console.log(result.data)
+        const data = result.data;
         setData(data);
-
-        if (data.length > 0 && boardID.length === 0) {
-          setBoardID(data[0]?._id);
-          getTaskData(data[0]?._id, token);
-        } else if (boardID.length > 0) {
-          getTaskData(boardID, token);
-        } else if (data.length === 0) {
-          setData([]);
-        }
-      } catch (error) {
-        console.log(error);
-        setData(null);
+        
       }
+    } else {
+      setData(null);
     }
-  },[user, boardID]);
+  }, [user, boardID]);
   // This function updates the board and updates the state with the new board data
-  const updateBoard = async (boardID: string, boardName: string) => {
-    try {
-      if (user !== null && token !== null && boardID !== "" && boardName !== "") { 
-        const response = await axios.put(
-          `${URL}/updateBoard/${boardID}`,
-          {
-            title: boardName,
-          },
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-        const data = response.data;
-        console.log(data);
-        getBoardData();
+  const updateBoardItem = async (boardID: string, boardName: string) => {
+    if (token  && boardID.length > 0 && boardName ) {
+      const result = await updateBoard(boardID, token, boardName);
+      if (result?.data && result.success === true) {
+        getBoardItems();
       }
-    } catch (error) {
-      console.log(error);
     }
   };
   // This function deletes the board and updates the state with the new board data
-  const deleteBoard = async (boardID: string) => {
-    try {
-      const response = await axios.delete(`${URL}/deleteBoard/${boardID}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = response.data;
-      console.log(data);
-      getBoardData();
-      setTasksData([]);
-    } catch (error) {
-      console.log(error);
+  const deleteBoardItem = async (boardID: string) => {
+    if (boardID !== "" && token !== null) {
+      const result = await deleteBoard(boardID, token);
+      if (result?.data && result.success === true) {
+        getBoardItems();
+        console.log("board deleted");
+      }
+      const deleteBoardItemIndex = data?.findIndex(board => board._id === boardID);
+      console.log("deletedBoard Index",deleteBoardItemIndex);
+      if(data && data.length > 0 && deleteBoardItemIndex && deleteBoardItemIndex !== -1 ) {
+        const nextBoardIndex =  deleteBoardItemIndex - 1 ;
+        console.log(nextBoardIndex);
+        if (nextBoardIndex !== -1 && nextBoardIndex > 0) {
+            setBoardID(data[nextBoardIndex]._id);
+            const selectedBoard = data.find((board:Data) => board._id === data[nextBoardIndex]._id);
+            if(selectedBoard && selectedBoard.tasks.length > 0){
+              getTaskItems(data[nextBoardIndex]._id, token);
+            } else{
+              setTasksData([]);
+            }
+            
+        }
+      }
     }
   };
-  const createTask = async (
+  const createTaskItem = async (
     boardID: string,
     title: string,
     content: string,
     status: string,
     token: string
   ) => {
-    try {
-      const response = await axios.post(
-        `${URL}/createTask/${boardID}`,
-        {
-          title: title,
-          content: content,
-          status: status,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const data = response.data;
-      if (!boardID) {
-        getTaskData(data[0]._id, token);
-      } else {
-        getTaskData(boardID, token);
-      }
-    } catch (error) {
-      console.log(error);
+    const result = await createTask(boardID, title, content, status, token);
+    if (result?.data && result.success === true) {
+      getTaskItems(boardID, token);
+    }
+    if (!boardID && data && data.length > 0) {
+      getTaskItems(data[0]._id, token);
+    } else {
+      getTaskItems(boardID, token);
     }
   };
-  const getTaskData = async (boardID: string, token: string) => {
-    if (user) {
-      try {
-        const data = await getTasksData(boardID, token);
-        console.log("task data", data);
-        setTasksData(data);
-      } catch (error) {
-        console.log(error);
-        console.log("error occurred in the task data")
-        setTasksData(null);
+  const getTaskItems = async (boardID: string, token: string) => {
+    if (boardID && token) {
+      const result = await getTasks(boardID, token);
+      if (result?.data && result.success === true) {
+        setTasksData(result.data);
       }
     }
   };
+  const getAllTaskItems = useCallback(async () => {
+    if (token && user) {
+      const result = await getAllTasks(token, user);
+      if (result?.data && result.success === true) {
+        setAllTasks(result.data);
+        // setTasksData(result.data);
+        // console.log(result.data)
+      }
+    }
+  },[token]);
 
   // This function deletes the task and updates the state with the new task data
-  const deleteTask = async (taskID: string, token: string) => {
-    try {
-      const response = await axios.delete(`${URL}/deleteTask/${taskID}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = response.data;
-      console.log(data);
-      getTaskData(boardID, token);
-    } catch (error: AxiosError | any) {
-      console.log(error);
+  const deleteTaskItem = async (taskID: string, token: string) => {
+    const result = await deleteTask(taskID, token);
+    if (result?.data && result.success === true) {
+      getTaskItems(boardID, token);
     }
   };
-  const updateTask = async (
+  const updateTaskItem = async (
     taskID: string,
     title: string,
     content: string,
     status: string,
     token: string
   ) => {
-    try {
-      const response = await axios.put(
-        `${URL}/updateTask/${taskID}`,
-        {
-          title: title,
-          content: content,
-          status: status,
-        },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
-      const data = response.data;
-      console.log(data);
-      getTaskData(boardID, token);
-    } catch (error: AxiosError | any) {
-      console.log(error);
+    const result = await updateTask(taskID, title, content, status, token);
+    if (result?.data && result.success === true) {
+      getTaskItems(boardID, token);
     }
   };
- // This function gets the task data and updates the state with the new task data
-  
+  // This function gets the task data and updates the state with the new task data
+
   useEffect(() => {
-    getBoardData();
+    getBoardItems();
+   
+    getAllTaskItems();
   }, [user]);
 
   return (
@@ -228,15 +189,18 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
       value={{
         data,
         tasksData,
+        allTasks,
         boardID,
-        createBoard,
-        updateBoard,
-        deleteBoard,
-        createTask,
-        getTaskData,
+        createBoardItem,
+        updateBoardItem,
+        deleteBoardItem,
+        createTaskItem,
+        getTaskItems,
+        getAllTaskItems,
         setBoardID,
-        deleteTask,
-        updateTask,
+        setTasksData,
+        deleteTaskItem,
+        updateTaskItem,
       }}
     >
       {children}
