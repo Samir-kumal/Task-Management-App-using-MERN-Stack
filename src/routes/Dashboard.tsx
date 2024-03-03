@@ -1,9 +1,8 @@
 import Main from "../components/Main";
-import NavBar from "../components/NavBar";
 
 const Dashboard = () => {
   return (
-    <div>
+    <div className="w-full flex bg-white  justify-center">
       <Main />
     </div>
   );
