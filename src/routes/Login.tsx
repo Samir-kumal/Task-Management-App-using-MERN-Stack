@@ -1,13 +1,20 @@
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import useLogin from "../hooks/useLogin";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import useAuthProvider from "../hooks/useAuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
-  const { login } = useLogin();
+  const location = useLocation();
+  const { token, login, getUserData } = useAuthProvider();
+
+  useEffect(() => {
+    if (token) {
+      navigate("/dashboard", { replace: true });
+    }
+  }, [location.pathname, token]);
   const [responseMessage, setResponseMessage] = useState({
     message: "",
     isSuccess: undefined as boolean | undefined,
@@ -18,21 +25,23 @@ const Login = () => {
       password: "",
     },
     onSubmit: async (values) => {
+      console.log("clicked");
       const loginUser = await login(values.email, values.password);
-      if (loginUser === true) {
+      if (loginUser?.success === true) {
         setResponseMessage({
           message: "Login Successful",
           isSuccess: true,
         });
+        getUserData();
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
         }, 2000);
-      } else if (loginUser === "User not found") {
+      } else if (loginUser?.error === "User not found") {
         setResponseMessage({
           message: "User Not Found, Please Register",
           isSuccess: false,
         });
-      } else if (loginUser === "Invalid credentials") {
+      } else if (loginUser?.error === "Invalid credentials") {
         setResponseMessage({
           message: "Invalid Credentials",
           isSuccess: false,
