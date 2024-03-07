@@ -1,4 +1,4 @@
-import { Task } from "../TaskLists";
+import { Priority, Task } from "../../context/DataProvider";
 
 interface TaskBoxProps {
   task: {
@@ -6,6 +6,7 @@ interface TaskBoxProps {
     status: string;
     title: string;
     content: string;
+    priority:Priority
   };
   handleClick: (task: Task) => void;
 

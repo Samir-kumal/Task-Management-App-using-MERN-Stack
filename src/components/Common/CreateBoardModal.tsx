@@ -11,14 +11,14 @@ interface CreateBoardModalProps {
 const CreateBoardModal: React.FC<CreateBoardModalProps> = ({
   setModelVisible,
 }) => {
-  const { createBoard } = useDataProvider();
+  const { createBoardItem } = useDataProvider();
   const { values, handleSubmit, handleBlur, handleChange, errors, touched } =
     useFormik({
       initialValues: {
         title: "",
       },
       onSubmit: (values) => {
-        createBoard(values.title);
+        createBoardItem(values.title);
         setModelVisible(false);
       },
       validationSchema: Yup.object({
