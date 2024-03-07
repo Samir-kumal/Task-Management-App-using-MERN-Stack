@@ -14,7 +14,7 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
   setModelVisible,
   selectedBoard,
 }) => {
-  const { updateBoard, deleteBoard, boardID } = useDataProvider();
+  const { updateBoardItem, deleteBoardItem, boardID } = useDataProvider();
   const { values, handleSubmit, handleBlur, handleChange, errors, touched } =
     useFormik({
       initialValues: {
@@ -22,7 +22,7 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
       },
       onSubmit: (values) => {
         if( values.title){
-            updateBoard(boardID,values.title);
+          updateBoardItem(boardID,values.title);
         setModelVisible(false);
 
         }
@@ -44,7 +44,7 @@ const UpdateBoardModal: React.FC<CreateBoardModalProps> = ({
             style="rounded-md p-1 text-xs bg-red-500 text-white mx-2"
             onClick={() => {
               if (boardID) {
-                deleteBoard(boardID);
+                deleteBoardItem(boardID);
               }
               setModelVisible(false);
             }}
