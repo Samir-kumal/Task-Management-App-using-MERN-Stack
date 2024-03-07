@@ -1,21 +1,24 @@
 import axios, { AxiosError } from "axios";
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
+import useLocalStorage from "../hooks/useLocalStorage";
+// import useLogin from "../hooks/useLogin";
 
 export interface AuthContextProps {
   user: UserDataProps | null;
-  responseMessage: ResponseMessageType | null;
+  token: string | null;
   logout: () => void;
+  login: ( email: string, password: string ) => Promise<{success:boolean,error: any}>;
   getUserData: () => void;
   isLoggedIn: boolean;
+  verifyEmail: (
+    token: string
+  ) => Promise<{ message: string; success: boolean } | undefined>;
 }
-interface ResponseMessageType {
-  message: string;
-  isSuccess: boolean | undefined;
-}
+
 interface AuthProps {
   children: React.ReactNode;
 }
-interface UserDataProps {
+export interface UserDataProps {
   _id: string;
   userName: string;
   userId: string;
@@ -25,24 +28,33 @@ interface UserDataProps {
 }
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
-const token = localStorage.getItem("token");
-// export const URL = "http://localhost:9001";
-export const URL = "https://backend-service-for-task-management.onrender.com";
+export const URL = "http://localhost:9001";
+// export const URL = "https://backend-service-for-task-management.onrender.com";
 const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataProps | null>(null);
-  const [responseMessage, setResponseMessage] = useState({
-    message: "",
-    isSuccess: undefined as boolean | undefined,
+
+  const [token,setToken] = useLocalStorage("token", null);
+  const [isLoggedIn,setIsLoggedIn] = useState(()=>{
+    if(token){
+      return true;
+    }else{
+      return false;
+    }
+  
   });
-  const isLoggedIn = token ? true : false;
-  console.log(isLoggedIn);
+
   useEffect(() => {
-    getUserData();
-  }, []);
+    if (token) {
+      setIsLoggedIn(true);
+    } else {
+      setIsLoggedIn(false);
+    }
+  }, [token]);
+  console.log(isLoggedIn);
+ 
 
-
-// Function to get user data
-  const getUserData =  async () => {
+  // Function to get user data
+  const getUserData = useCallback(async () => {
     if (token) {
       try {
         const response = await axios.get(`${URL}/getUser`, {
@@ -56,21 +68,59 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
         console.log(error);
       }
     }
+  },[token]);
+  const verifyEmail = async (emailToken: string) => {
+    console.log(emailToken);
+    if (emailToken) {
+      try {
+        const response = await axios.post(`${URL}/verify-email`, {
+          emailToken,
+        });
+        const data = response.data;
+        console.log(data);
+        return { message: data.message, success: true };
+      } catch (error: AxiosError | any) {
+        console.log(error);
+        return { message: error.response.data.message, success: false };
+      }
+    }
   };
   const logout = () => {
-    localStorage.clear();
+    setToken(null)
     setUser(null);
-    setResponseMessage({
-      message:"",
-      isSuccess:undefined
-    })
+   
   };
 
- 
+  const login = async (email: string, password: string) => {
+    try {
+      const response = await axios.post(`${URL}/login`, {
+        email: email,
+        password: password,
+      });
+      console.log(response.data.token);
+      setToken(response.data.token);
+        return {success:true, error:""};
 
+    } catch (error: AxiosError | any) {
+      console.log(error.response.data.message);
+      return {success:false,error:error.response.data.message};
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, [token]);
   return (
     <AuthContext.Provider
-      value={{ user, logout, responseMessage, getUserData, isLoggedIn }}
+      value={{
+        user,
+        token,
+        logout,
+        login,
+        getUserData,
+        isLoggedIn,
+        verifyEmail,
+      }}
     >
       {children}
     </AuthContext.Provider>
