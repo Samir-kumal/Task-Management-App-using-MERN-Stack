@@ -1,11 +1,8 @@
-import React from 'react'
-import SideBar from '../components/SideBar'
 import TaskList from '../components/TaskLists'
 
 const Tasks = () => {
   return (
-    <div className='flex flex-row'>
-        <SideBar/>
+    <div className='flex flex-row bg-blue-100 w-full'>
         <TaskList/>
     </div>
   )
