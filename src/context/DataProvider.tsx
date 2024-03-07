@@ -14,7 +14,9 @@ interface DataContextValue {
   tasksData: Task[] | null;
   allTasks: Task[] | null;
   boardID: string;
+  isLoading: boolean;
   createBoardItem: (boardName: string) => Promise<void>;
+  getBoardItems:()=> Promise<void>;
   updateBoardItem: (boardID: string, boardName: string) => Promise<void>;
   deleteBoardItem: (boardID: string) => Promise<void>;
   createTaskItem: (
@@ -22,14 +24,17 @@ interface DataContextValue {
     title: string,
     content: string,
     status: string,
+    priority: Priority,
     token: string
   ) => Promise<void>;
-  deleteTaskItem: (taskID: string, token: string) => Promise<void>;
+  deleteTaskItem: (taskID: string, boardID:string, token: string) => Promise<void>;
   updateTaskItem: (
     taskID: string,
+    boardID: string,
     title: string,
     content: string,
     status: string,
+    priority: Priority,
     token: string
   ) => Promise<void>;
   getTaskItems: (boardID: string, token: string) => Promise<void>;
@@ -40,14 +45,18 @@ interface DataContextValue {
 export interface Data {
   _id: string;
   title: string;
-  tasks: string[];
+  tasks: Task[];
+  created: Date;
 }
-export interface Task {
+export interface Task {  
   _id: string;
   title: string;
   content: string;
   status: string;
+  priority: Priority;
 }
+
+export type Priority = "low" | "normal" | "high";
 
 export interface childrenProps {
   children: React.ReactNode;
@@ -59,7 +68,8 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   const [tasksData, setTasksData] = useState<Task[]>([]);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [boardID, setBoardID] = useState<string>("");
-  const { user,token } = useAuthProvider();
+  const { user, token } = useAuthProvider();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // This function creates the board and updates the state with the new board data
 
@@ -75,12 +85,13 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   // This function gets the board data and updates the state with the new board data
   const getBoardItems = useCallback(async () => {
     if (user && token) {
+      setIsLoading(true);
       const result = await getBoards(user, token);
       if (result?.data && result.success === true) {
-        console.log(result.data)
+        console.log(result.data);
         const data = result.data;
         setData(data);
-        
+        setIsLoading(false);
       }
     } else {
       setData(null);
@@ -88,7 +99,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   }, [user, boardID]);
   // This function updates the board and updates the state with the new board data
   const updateBoardItem = async (boardID: string, boardName: string) => {
-    if (token  && boardID.length > 0 && boardName ) {
+    if (token && boardID.length > 0 && boardName) {
       const result = await updateBoard(boardID, token, boardName);
       if (result?.data && result.success === true) {
         getBoardItems();
@@ -103,20 +114,28 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
         getBoardItems();
         console.log("board deleted");
       }
-      const deleteBoardItemIndex = data?.findIndex(board => board._id === boardID);
-      console.log("deletedBoard Index",deleteBoardItemIndex);
-      if(data && data.length > 0 && deleteBoardItemIndex && deleteBoardItemIndex !== -1 ) {
-        const nextBoardIndex =  deleteBoardItemIndex - 1 ;
+      const deleteBoardItemIndex = data?.findIndex(
+        (board) => board._id === boardID
+      );
+      console.log("deletedBoard Index", deleteBoardItemIndex);
+      if (
+        data &&
+        data.length > 0 &&
+        deleteBoardItemIndex &&
+        deleteBoardItemIndex !== -1
+      ) {
+        const nextBoardIndex = deleteBoardItemIndex - 1;
         console.log(nextBoardIndex);
         if (nextBoardIndex !== -1 && nextBoardIndex > 0) {
-            setBoardID(data[nextBoardIndex]._id);
-            const selectedBoard = data.find((board:Data) => board._id === data[nextBoardIndex]._id);
-            if(selectedBoard && selectedBoard.tasks.length > 0){
-              getTaskItems(data[nextBoardIndex]._id, token);
-            } else{
-              setTasksData([]);
-            }
-            
+          setBoardID(data[nextBoardIndex]._id);
+          const selectedBoard = data.find(
+            (board: Data) => board._id === data[nextBoardIndex]._id
+          );
+          if (selectedBoard && selectedBoard.tasks.length > 0) {
+            getTaskItems(data[nextBoardIndex]._id, token);
+          } else {
+            setTasksData([]);
+          }
         }
       }
     }
@@ -126,9 +145,17 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
     title: string,
     content: string,
     status: string,
+    priority: Priority,
     token: string
   ) => {
-    const result = await createTask(boardID, title, content, status, token);
+    const result = await createTask(
+      boardID,
+      title,
+      content,
+      status,
+      priority,
+      token
+    );
     if (result?.data && result.success === true) {
       getTaskItems(boardID, token);
     }
@@ -140,38 +167,50 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   };
   const getTaskItems = async (boardID: string, token: string) => {
     if (boardID && token) {
+      setIsLoading(true);
       const result = await getTasks(boardID, token);
       if (result?.data && result.success === true) {
         setTasksData(result.data);
+        setIsLoading(false);
       }
     }
   };
-  const getAllTaskItems = useCallback(async () => {
+  const getAllTaskItems = async () => {
     if (token && user) {
-      const result = await getAllTasks(token, user);
+      const result = await getAllTasks(token, user?.userId);
       if (result?.data && result.success === true) {
         setAllTasks(result.data);
         // setTasksData(result.data);
-        // console.log(result.data)
+        console.log(result.data);
       }
     }
-  },[token]);
+  };
 
   // This function deletes the task and updates the state with the new task data
-  const deleteTaskItem = async (taskID: string, token: string) => {
-    const result = await deleteTask(taskID, token);
+  const deleteTaskItem = async (taskID: string,boardID:string, token: string) => {
+    const result = await deleteTask(taskID, boardID, token);
     if (result?.data && result.success === true) {
       getTaskItems(boardID, token);
     }
   };
   const updateTaskItem = async (
     taskID: string,
+    boardID: string,
     title: string,
     content: string,
     status: string,
+    priority: Priority,
     token: string
   ) => {
-    const result = await updateTask(taskID, title, content, status, token);
+    const result = await updateTask(
+      taskID,
+      boardID,
+      title,
+      content,
+      status,
+      priority,
+      token
+    );
     if (result?.data && result.success === true) {
       getTaskItems(boardID, token);
     }
@@ -180,9 +219,9 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
 
   useEffect(() => {
     getBoardItems();
-   
+
     getAllTaskItems();
-  }, [user]);
+  }, [user, token]);
 
   return (
     <DataContext.Provider
@@ -191,7 +230,9 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
         tasksData,
         allTasks,
         boardID,
+        isLoading,
         createBoardItem,
+        getBoardItems,
         updateBoardItem,
         deleteBoardItem,
         createTaskItem,
