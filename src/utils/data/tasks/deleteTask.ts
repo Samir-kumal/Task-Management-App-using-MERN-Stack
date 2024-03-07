@@ -1,9 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { URL } from "../../../context/AuthProvider";
 
-export const deleteTask = async (taskID: string, token: string) => {
+export const deleteTask = async (taskID: string, boardID:string, token: string) => {
   try {
-    const response = await axios.delete(`${URL}/deleteTask/${taskID}`, {
+    const response = await axios.delete(`${URL}/deleteTask/${boardID}/${taskID}`, {
       headers: { Authorization: `Bearer ${token}` },
     });
     const data = response.data;

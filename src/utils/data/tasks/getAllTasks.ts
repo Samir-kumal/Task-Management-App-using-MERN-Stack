@@ -1,10 +1,9 @@
 import axios, { AxiosError } from "axios";
 import { URL, UserDataProps } from "../../../context/AuthProvider";
 
-export const getAllTasks = async(token:string, user:UserDataProps)=>{
-    if(token && user){
+export const getAllTasks = async(token:string, userID:string)=>{
         try {
-            const response = await axios.get(`${URL}/${user?._id}/allTasks`, {
+            const response = await axios.get(`${URL}/${userID}/allTaskItems`, {
             headers: { Authorization: `Bearer ${token}` },
             });
             const data = response.data;
@@ -15,5 +14,4 @@ export const getAllTasks = async(token:string, user:UserDataProps)=>{
             console.log("error occurred in the task data");
             return {error, status:error.response.status, success: false};
         }
-    }
 }
