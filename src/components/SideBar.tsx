@@ -4,12 +4,10 @@ import useDataProvider from "../hooks/useDataProvider";
 import ToggleIconClose from "./svgs/ToggleIconClose";
 import ToggleIconOpen from "./svgs/ToggleIconOpen";
 import CreateBoard from "./Common/CreateBoardModal";
-import EditIcon from "./svgs/EditIcon";
 import UpdateBoardModal from "./Common/UpdateBoardModal";
-import LoadingComponent from "./Common/LoadingComponent";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useAuthProvider from "../hooks/useAuthProvider";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useLocation, useNavigate} from "react-router-dom";
 import DashboardIcon from "./svgs/DashboardIcon";
 import TaskBoardsIcon from "./svgs/TaskBoardsIcon";
 import CalendarIcon from "./svgs/CalendarIcon";
@@ -19,8 +17,7 @@ const SideBar = () => {
   const [visible, setVisible] = useState(true);
   const [createModelVisible, setCreateModelVisible] = useState(false);
   const [updateModelVisible, setUpdateModelVisible] = useState(false);
-  const [currentBoardIndex, setCurrentBoardIndex] = useState(0);
-  const [isHovered, setIsHovered] = useState(false);
+
   const navigate = useNavigate();
   const handleToggle = useCallback(() => {
     setVisible((previous) => !previous);
@@ -28,88 +25,121 @@ const SideBar = () => {
   const { token } = useAuthProvider();
   const { data, setBoardID, getTaskItems, setTasksData } = useDataProvider();
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
-  const [tasksSubMenuVisible, setTasksSubMenuVisible] = useLocalStorage("tasksSubMenuVisible",false);
-  const [selectedBoardIndex, setSelectedBoardIndex] = useLocalStorage( "selectedBoardIndex", null);
-
-
-  const [sideBarIndex, setSideBarIndex] = useLocalStorage("sideBarIndex", 1);
+  const [tasksSubMenuVisible, setTasksSubMenuVisible] = useLocalStorage(
+    "tasksSubMenuVisible",
+    false
+  );
+  const [selectedBoardIndex, setSelectedBoardIndex] = useLocalStorage(
+    "selectedBoardIndex",
+    null
+  );
+  const location = useLocation();
 
   const tabData = [
     {
       id: 1,
       alt: "dashboard",
       title: "Dashboard",
-      icon: <DashboardIcon fill={sideBarIndex ===1 ? "blue" : undefined} />,
+      icon: (
+        <DashboardIcon
+          fill={location.pathname === "/dashboard" ? "blue" : undefined}
+        />
+      ),
+      tabActive: location.pathname === "/dashboard" ? true : false,
     },
     {
       id: 2,
       alt: "boards",
       title: "Boards",
-      icon: <TaskBoardsIcon fill={sideBarIndex ===2 ? "blue" : undefined} />,
+      icon: (
+        <TaskBoardsIcon
+          fill={location.pathname === "/dashboard/boards" ? "blue" : undefined}
+        />
+      ),
+      tabActive: location.pathname === "/dashboard/boards" ? true : false,
     },
     {
       id: 3,
       alt: "calendar",
       title: "Calender",
-      icon: <CalendarIcon fill={sideBarIndex ===3 ? "blue" : undefined} />,
+      icon: (
+        <CalendarIcon
+          fill={
+            location.pathname === "/dashboard/calendar" ? "blue" : undefined
+          }
+        />
+      ),
+      tabActive: location.pathname === "/dashboard/calendar" ? true : false,
     },
     {
       id: 4,
       alt: "notifications",
       title: "Notifications",
-      icon: <NotificationIcon fill={sideBarIndex ===4 ? "blue" : undefined} />,
+      icon: (
+        <NotificationIcon
+          fill={
+            location.pathname === "/dashboard/notifications"
+              ? "blue"
+              : undefined
+          }
+        />
+      ),
+      tabActive:
+        location.pathname === "/dashboard/notifications" ? true : false,
     },
   ];
 
-  const handleSideBarButtonClick = (alt: string, id: number) => {
-    setSideBarIndex(id);
-    if(selectedBoardIndex){
+  const handleSideBarButtonClick = (alt: string) => {
+    if (selectedBoardIndex) {
       setSelectedBoardIndex(null);
       setTasksSubMenuVisible(false);
     }
     if (alt !== "dashboard") {
       navigate(`/dashboard/${alt}`);
-    }else{
+    } else {
       navigate(`/dashboard`);
     }
   };
 
   const handleBoardClick = (boardID: string) => {
-    // setBoardParams({boardID: "123"});
-   if(boardID){
-    setBoardID(boardID);
-    setSelectedBoardIndex(boardID);
-    const selectedBoard = data?.find((item) => item._id === boardID);
-    if (selectedBoard && selectedBoard?.tasks.length > 0 && token) {
-      getTaskItems(boardID, token);
-    } else {
-      setTasksData([]);
+    if (boardID) {
+      setBoardID(boardID);
+      setSelectedBoardIndex(boardID);
+      const selectedBoard = data?.find((item) => item._id === boardID);
+      if (selectedBoard && selectedBoard?.tasks.length > 0 && token) {
+        getTaskItems(boardID, token);
+      } else {
+        setTasksData([]);
+      }
+      setTimeout(() => navigate(`/dashboard/boards/${boardID}`), 500);
     }
-   setTimeout(()=>navigate(`/dashboard/boards/${boardID}`),500)
-   }
-
   };
+
+ 
 
   return (
     <section
-      className={` h-[calc(100vh-4rem)] overflow   bg-white shadow-2xl relative transition-all duration-300 ${
-        visible ? "w-72" : "w-fit "
+      className={` md:h-[calc(100vh-4rem)] overflow     bg-white shadow-2xl md:relative fixed bottom-0 w-fit transition-all duration-300 ${
+        visible ? "lg:w-72" : "w-fit "
       }`}
     >
       <div
         className={`overflow-hidden ${
-          visible ? "w-full" : " w-fit "
-        }   flex flex-col   justify-between h-full`}
+          visible ? "lg:w-full w-fit" : " w-fit "
+        }   flex lg:flex-col flex-row   justify-between h-full`}
       >
-        <div className={` h-full ${visible ? "p-5" : "p-2"}`}>
-          <ul className="flex flex-col gap-y-2">
+        <div className={` lg:h-full md:h-full h-fit ${visible ? "p-5" : "p-2"}`}>
+          <ul className="flex lg:flex-col md:flex-col flex-row gap-y-2">
             {tabData.map((item) => (
-              <section   key={item.id}  className={`flex font-poppins flex-row w-full ${item.id === sideBarIndex
-                ? "text-primary font-bold "
-                : "text-black"}   relative gap-x-2 `}>
-                <Button style = {`w-full `}
-                
-                  onClick={() => handleSideBarButtonClick(item.alt, item.id)}
+              <section
+                key={item.id}
+                className={`flex font-poppins flex-row w-full ${
+                  item.tabActive ? "text-primary font-bold " : "text-black"
+                }   relative gap-x-2 `}
+              >
+                <Button
+                  style={`w-full `}
+                  onClick={() => handleSideBarButtonClick(item.alt)}
                 >
                   <li className="py-2 px-4 w-full min-w-fit rounded-xl flex flex-col gap-x-4 justify-start items-start">
                     <div
@@ -119,19 +149,25 @@ const SideBar = () => {
                     >
                       {item.icon}
                       {visible && <p className="">{item.title}</p>}
-                      
                     </div>
 
                     {item.id === 2 && tasksSubMenuVisible && visible && (
                       <ul className="flex flex-col mt-4   gap-y-2 w-full">
-                       
                         <li className="flex flex-col w-full gap-x-2 bg-black/5 items-start justify-start  gap-y-2">
                           {data ? (
                             data.map((item) => (
-                              <li className = "hover:bg-black/10 w-full ">
-                                <Button onClick={()=>handleBoardClick(item._id)} style={`text-black text-left font-semibold ${selectedBoardIndex === item._id ?"bg-black/10 ": "" } w-full flex flex-row items-center justify-start gap-x-3 text-xs px-4 py-2`}>
+                              <li className="hover:bg-black/10 w-full ">
+                                <Button
+                                  onClick={() => handleBoardClick(item._id)}
+                                  style={`text-black text-left font-semibold ${
+                                    selectedBoardIndex === item._id
+                                      ? "bg-black/10 "
+                                      : ""
+                                  } w-full flex flex-row items-center justify-start gap-x-3 text-xs px-4 py-2`}
+                                >
                                   <div className="w-1 h-1 bg-black rounded-full"></div>
-                                   {item.title}</Button>
+                                  {item.title}
+                                </Button>
                               </li>
                             ))
                           ) : (
