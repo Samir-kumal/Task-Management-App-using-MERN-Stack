@@ -1,20 +1,23 @@
 import axios, { AxiosError } from "axios";
 import { URL } from "../../../context/AuthProvider";
+import { Priority } from "../../../context/DataProvider";
 export const createTask = async (
   boardID: string,
   title: string,
   content: string,
   status: string,
+  priority:Priority,
   token: string
 ) => {
   try {
-    if (boardID && title && content && status && token) {
+    if (boardID && title && content && status && priority && token) {
       const response = await axios.post(
         `${URL}/createTask/${boardID}`,
         {
           title: title,
           content: content,
           status: status,
+          priority:priority
         },
         {
           headers: { Authorization: `Bearer ${token}` },
