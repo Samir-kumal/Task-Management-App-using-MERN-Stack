@@ -3,14 +3,31 @@ import SignoutIcon from "./svgs/SignoutIcon";
 import { useNavigate } from "react-router-dom";
 import ProfileIcon from "./svgs/ProfileIcon";
 import useAuthProvider from "../hooks/useAuthProvider";
+import { useEffect, useRef } from "react";
 
 const UserProfileDropDown = () => {
   const navigate = useNavigate();
   const { logout } = useAuthProvider();
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (ref.current && !ref.current.contains(event.target as Node)) {
+        ref.current.style.display = "none";
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [ref]);
   return (
-    <div className="bg-primary/40 rounded-lg  h-fit w-11/12 mx-2 -top-28 shadow-2xl">
+    <div
+      ref={ref}
+      className="bg-white rounded-lg  h-fit w-fit mx-2 -top-28 shadow-2xl"
+    >
       <Button
-        style="w-full bg-black/5 text-black/90 border-b-2 border-black/10 py-4 flex flex-row justify-center gap-x-2 text-sm hover:bg-black/10"
+        style="w-full  text-black/90 border-b-2 border-black/10 py-4 flex flex-row justify-center gap-x-2 text-sm hover:bg-black/10 rounded-lg"
         onClick={() => {
           logout();
           setTimeout(() => {
@@ -18,13 +35,13 @@ const UserProfileDropDown = () => {
           }, 2000);
         }}
       >
-        <div>
+        <>
           <SignoutIcon />
-        </div>
+        </>
         Signout
       </Button>
       <Button
-        style="w-full bg-black/5 text-black/90 text-sm flex flex-row items-center justify-center gap-x-2 hover:bg-black/10"
+        style="lg:w-32 md:w-32 w-10/12    text-black/90 text-sm flex flex-row items-center justify-center gap-x-2 hover:bg-black/10 rounded-lg"
         onClick={() => {
           navigate("/profile");
         }}
