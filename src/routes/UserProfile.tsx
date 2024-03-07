@@ -188,7 +188,7 @@ const UserProfile = () => {
     setIsFormInput(false);
   };
   return (
-    <div className="bg-primary/10 flex lg:flex-row md:flex-row flex-col h-lvh w-lvw">
+    <div className="bg-white text-black font-poppins flex lg:flex-row md:flex-row flex-col h-lvh w-lvw">
       <div className="md:w-1/4 w-full border-r-2 border-black/10 md:h-full bg-white flex flex-col gap-y-2 items-center">
         <div className="w-full  flex flex-col items-center mt-20">
           {options.map((item, index) => (
