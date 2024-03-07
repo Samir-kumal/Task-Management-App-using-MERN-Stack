@@ -4,21 +4,26 @@ import * as Yup from "yup";
 import ErrorTextComponent from "./ErrorTextComponent";
 import useDataProvider from "../../hooks/useDataProvider";
 import { Task } from "../../context/DataProvider";
+import useAuthProvider from "../../hooks/useAuthProvider";
+import { Priority } from "./TaskModal";
 
 interface TaskModalProps {
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
   selectedTask: Task | null;
+  boardID: string;
 }
 const UpdateTaskModal: React.FC<TaskModalProps> = ({
   setModalVisible,
   selectedTask,
+  boardID
 }) => {
-  const { deleteTask, updateTask, boardID } = useDataProvider();
-  const token = localStorage.getItem("token");
+  const { deleteTaskItem, updateTaskItem } = useDataProvider();
+  const { token } = useAuthProvider();
   const {
     values,
     initialValues,
     handleSubmit,
+    setFieldValue,
     handleBlur,
     handleChange,
     errors,
@@ -28,13 +33,22 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
       title: selectedTask?.title,
       content: selectedTask?.content,
       status: selectedTask?.status,
+      priority: selectedTask?.priority,
     },
     onSubmit: (values) => {
       // createBoard(values.title);
-      const { title, content, status } = values;
+      const { title, content, status, priority } = values;
       console.log("boardID", boardID);
-      if(selectedTask?._id && title && content && status){
-        updateTask(selectedTask._id, title, content, status, token !==null ? token : "" );   
+      if (selectedTask?._id && title && content && status && priority) {
+        updateTaskItem(
+          selectedTask._id,
+          boardID,
+          title,
+          content,
+          status,
+          priority,
+          token !== null ? token : ""
+        );
       }
 
       setModalVisible(false);
@@ -48,9 +62,13 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
   });
   const handleTaskDelete = () => {
     if (selectedTask?._id && token) {
-      deleteTask(selectedTask._id, token);
+      deleteTaskItem(selectedTask._id,boardID, token);
     }
     setModalVisible(false);
+  };
+
+  const handleButtonClick = (priorityValue: string) => {
+    setFieldValue("priority", priorityValue);
   };
   const titleInput = "border-2 p-2 my-3 border-black/30 rounded-md";
   const titleInputError = "border-2 p-2 my-3 border-red-500 rounded-md";
@@ -58,7 +76,7 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
   const contentInputError = "border-2 p-2 h-40 my-3 border-red-500 rounded-md";
   return (
     <div className="inset-0 absolute h-lvh w-lvw bg-black/40 flex flex-row justify-center">
-      <div className="w-1/3 bg-white h-fit translate-y-20 rounded-lg flex flex-col  items-center">
+      <div className="lg:w-1/3 md:w-1/2 min-w-[300px] bg-white h-fit translate-y-20 rounded-lg flex flex-col  items-center">
         <div className="flex flex-row justify-between w-full py-2 px-4  items-center">
           <h2 className="text-2xl font-bold">Update Task</h2>
           <div className="flex flex-row gap-x-2">
@@ -117,7 +135,41 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
             touched={touched.content}
             errors={errors.content}
           />
-
+          <div className="flex flex-row justify-center  gap-x-2">
+            <button
+              type="button"
+              name="priority"
+              onBlur={handleBlur}
+              onClick={() => handleButtonClick(Priority.Low)}
+              className={`${
+                values.priority === "low" ? "btn-active" : "btn-outline"
+              }  btn btn-success`}
+            >
+              Low
+            </button>
+            <button
+              type="button"
+              name="priority"
+              onBlur={handleBlur}
+              onClick={() => handleButtonClick(Priority.Normal)}
+              className={` ${
+                values.priority === "normal" ? "btn-active" : "btn-outline"
+              }  btn  btn-info`}
+            >
+              Normal
+            </button>
+            <button
+              type="button"
+              name="priority"
+              onBlur={handleBlur}
+              onClick={() => handleButtonClick(Priority.High)}
+              className={` ${
+                values.priority === "high" ? "btn-active" : "btn-outline"
+              } btn btn-outline btn-error`}
+            >
+              High
+            </button>
+          </div>
           <label
             className="text-sm text-black/60 font-semibold"
             htmlFor="status"
