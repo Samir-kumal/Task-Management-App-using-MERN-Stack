@@ -1,4 +1,6 @@
-const SecurityIcon = () => {
+import { memo } from "react";
+
+const SecurityIcon = memo(() => {
   return (
     <svg
       width="20"
@@ -17,6 +19,6 @@ const SecurityIcon = () => {
       />
     </svg>
   );
-};
+});
 
 export default SecurityIcon;
