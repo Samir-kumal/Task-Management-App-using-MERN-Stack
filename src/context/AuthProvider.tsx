@@ -1,13 +1,28 @@
-import axios, { AxiosError } from "axios";
-import React, { createContext, useState, useEffect, useCallback } from "react";
+import React, {
+  createContext,
+  useState,
+  useEffect,
+  useCallback,
+} from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
-// import useLogin from "../hooks/useLogin";
+import { login } from "../utils/auth/login";
+import { fetchUserData } from "../utils/data/user/fetchUserData";
+import { verifyUserEmail } from "../utils/auth/verifyUserEmail";
+import { register } from "../utils/auth/register";
 
 export interface AuthContextProps {
   user: UserDataProps | null;
   token: string | null;
   logout: () => void;
-  login: ( email: string, password: string ) => Promise<{success:boolean,error: any}>;
+  registerUser: (values: {
+    username: string;
+    email: string;
+    password: string;
+  }) => Promise<{ message: string; success: boolean } | undefined>;
+  loginUser: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; error: any }>;
   getUserData: () => void;
   isLoggedIn: boolean;
   verifyEmail: (
@@ -28,19 +43,18 @@ export interface UserDataProps {
 }
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
-export const URL = "http://localhost:9001";
+// export const URL = "http://localhost:9001";
 // export const URL = "https://backend-service-for-task-management.onrender.com";
+export const URL = "https://node-js-backend-task-management-app-ten.vercel.app";
 const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataProps | null>(null);
-
-  const [token,setToken] = useLocalStorage("token", null);
-  const [isLoggedIn,setIsLoggedIn] = useState(()=>{
-    if(token){
+  const [token, setToken] = useLocalStorage("token", null);
+  const [isLoggedIn, setIsLoggedIn] = useState(() => {
+    if (token) {
       return true;
-    }else{
+    } else {
       return false;
     }
-  
   });
 
   useEffect(() => {
@@ -50,61 +64,47 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
       setIsLoggedIn(false);
     }
   }, [token]);
-  console.log(isLoggedIn);
- 
 
   // Function to get user data
   const getUserData = useCallback(async () => {
-    if (token) {
-      try {
-        const response = await axios.get(`${URL}/getUser`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        const data = response.data;
-        console.log(data.data);
-        setUser(data.data);
-        localStorage.setItem("user", JSON.stringify(data.data.userId));
-      } catch (error: AxiosError | any) {
-        console.log(error);
-      }
+    const result = await fetchUserData(token);
+    if (result?.data && result.success === true) {
+      setUser(result.data);
     }
-  },[token]);
+  }, [token, user]);
+
+  // Function to register User
+
+  const registerUser = async (values: {
+    username: string;
+    email: string;
+    password: string;
+  }) => {
+    const result = await register(values);
+    if (result.message) {
+      return result;
+    }
+  };
+  // Function to verify User Email
+
   const verifyEmail = async (emailToken: string) => {
-    console.log(emailToken);
-    if (emailToken) {
-      try {
-        const response = await axios.post(`${URL}/verify-email`, {
-          emailToken,
-        });
-        const data = response.data;
-        console.log(data);
-        return { message: data.message, success: true };
-      } catch (error: AxiosError | any) {
-        console.log(error);
-        return { message: error.response.data.message, success: false };
-      }
-    }
+    console.log("email Token",emailToken);
+    const result = await verifyUserEmail(emailToken);
+    return result;
   };
+
+  // Function to Login User
+
+  const loginUser = async (email: string, password: string) => {
+    const result = login(email, password);
+    setToken((await result).data);
+    return result;
+  };
+
+  // Function to logout User
   const logout = () => {
-    setToken(null)
+    setToken(null);
     setUser(null);
-   
-  };
-
-  const login = async (email: string, password: string) => {
-    try {
-      const response = await axios.post(`${URL}/login`, {
-        email: email,
-        password: password,
-      });
-      console.log(response.data.token);
-      setToken(response.data.token);
-        return {success:true, error:""};
-
-    } catch (error: AxiosError | any) {
-      console.log(error.response.data.message);
-      return {success:false,error:error.response.data.message};
-    }
   };
 
   useEffect(() => {
@@ -116,7 +116,8 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
         user,
         token,
         logout,
-        login,
+        registerUser,
+        loginUser,
         getUserData,
         isLoggedIn,
         verifyEmail,
