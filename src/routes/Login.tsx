@@ -8,7 +8,8 @@ import useAuthProvider from "../hooks/useAuthProvider";
 const Login = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { token, login, getUserData } = useAuthProvider();
+  const { token, loginUser, getUserData } = useAuthProvider();
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -26,8 +27,9 @@ const Login = () => {
     },
     onSubmit: async (values) => {
       console.log("clicked");
-      const loginUser = await login(values.email, values.password);
-      if (loginUser?.success === true) {
+      setIsSubmitted(true);
+      const response = await loginUser(values.email, values.password);
+      if (response?.success === true) {
         setResponseMessage({
           message: "Login Successful",
           isSuccess: true,
@@ -35,17 +37,21 @@ const Login = () => {
         getUserData();
         setTimeout(() => {
           navigate("/dashboard", { replace: true });
+          setIsSubmitted(false);
         }, 2000);
-      } else if (loginUser?.error === "User not found") {
+      } else if (response?.error === "User not found") {
         setResponseMessage({
           message: "User Not Found, Please Register",
           isSuccess: false,
         });
-      } else if (loginUser?.error === "Invalid credentials") {
+        setIsSubmitted(false);
+
+      } else if (response?.error === "Invalid credentials") {
         setResponseMessage({
           message: "Invalid Credentials",
           isSuccess: false,
         });
+        setIsSubmitted(false);
       }
     },
 
@@ -124,8 +130,8 @@ const Login = () => {
             </p>
           )}
 
-          <button type="submit" className={LoginButton}>
-            Login
+          <button type="submit" disabled= {isSubmitted ? true : false} className={LoginButton}>
+           { isSubmitted ? <span className="loading loading-dots loading-lg"></span> : "Login"}
           </button>
           <p className="text-xs">OR</p>
           <button

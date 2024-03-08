@@ -3,8 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import axios, { AxiosError } from "axios";
-import { URL } from "../context/AuthProvider";
+import useAuthProvider from "../hooks/useAuthProvider";
 
 interface ResponseMessageType {
   message: string;
@@ -16,6 +15,9 @@ const Register = () => {
     isSuccess: undefined,
   });
   const navigate = useNavigate();
+  const { registerUser } = useAuthProvider();
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   const { handleSubmit, handleChange, values, errors, touched } = useFormik({
     initialValues: {
       username: "",
@@ -36,39 +38,30 @@ const Register = () => {
         .required("Confirm Password is required")
         .oneOf([Yup.ref("password")], "Passwords must match"),
     }),
-    onSubmit: (values) => {
-      registerUser(values);
-     
+    onSubmit: async (values) => {
+      setIsSubmitted(true);
+      const response = await registerUser(values);
+      if (response) {
+        if (response?.message && response?.success === true) {
+          setResponseMessage({
+            message: response.message,
+            isSuccess: true,
+          });
+          setTimeout(() => {
+            navigate("/verify-email", { replace: true });
+          }, 1000);
+          setIsSubmitted(false);
+
+        } else {
+          setResponseMessage({
+            message: response.message,
+            isSuccess: false,
+          });
+          setIsSubmitted(false);
+        }
+      }
     },
   });
-
-  const registerUser = async (values: {
-    username: string;
-    email: string;
-    password: string;
-  }) => {
-    try {
-      const response = await axios.post(`${URL}/register`, {
-        name: values.username,
-        email: values.email,
-        password: values.password,
-      });
-      console.log(response.data.message);
-      setResponseMessage({
-        message: response.data.message,
-        isSuccess: true,
-      });
-      setTimeout(() => {
-        navigate("/login",{replace:true});
-      }, 1000);
-    } catch (error:AxiosError | any) {
-      console.log(error.response.data.message);
-      setResponseMessage({
-        message: error.response.data.message,
-        isSuccess: false,
-      });
-    }
-  };
 
   //   const navigate = useNavigate();
   console.log(responseMessage.message);
@@ -181,8 +174,16 @@ const Register = () => {
               {responseMessage.message}
             </p>
           )}
-          <button type="submit" className={LoginButton}>
-            Register
+          <button
+            type="submit"
+            disabled={isSubmitted ? true : false}
+            className={LoginButton}
+          >
+            {isSubmitted ? (
+              <span className="loading loading-dots loading-lg"></span>
+            ) : (
+              "Register"
+            )}
           </button>
         </form>
       </div>
