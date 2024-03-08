@@ -1,8 +1,10 @@
-import React from 'react'
+import CommingSoon from '../components/Common/CommingSoon'
 
 const Calendar = () => {
   return (
-    <div>Calendar</div>
+    <>
+    <CommingSoon/>
+    </>
   )
 }
 
