@@ -1,4 +1,3 @@
-import Email from "../assets/Images/email.png";
 import { useEffect, useState } from "react";
 import EmailVerify from "../assets/Images/email-verification-icon.png";
 import { Player } from "@lottiefiles/react-lottie-player";

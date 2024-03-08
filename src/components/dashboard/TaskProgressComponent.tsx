@@ -1,6 +1,3 @@
-import React from "react";
-import { Paper } from "@mui/material";
-import LinearProgressWithLabel from "./LinearProgressWithLabel";
 import { Data } from "../../context/DataProvider";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
