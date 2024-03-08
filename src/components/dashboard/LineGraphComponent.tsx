@@ -27,7 +27,7 @@ const LineGraphComponent = memo(({ data }: { data: Data[] | null }) => {
           height={150}
         />
       ) : (
-        <LoadingComponent content="" />
+        <LoadingComponent content="Loading Chart" height="h-32" width="w-full" />
       )}
     </section>
   );

@@ -1,61 +1,113 @@
-import React, { useCallback, useState } from "react";
-import SideBar from "../components/SideBar";
+import { useCallback, useEffect, useState } from "react";
 import useDataProvider from "../hooks/useDataProvider";
 import Button from "../components/Button";
 import CreateBoardModal from "../components/Common/CreateBoardModal";
 import UpdateBoardModal from "../components/Common/UpdateBoardModal";
-import { useNavigate, useSearchParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import useAuthProvider from "../hooks/useAuthProvider";
+import EditIcon from "../components/svgs/EditIcon";
+import taskLength from "../helper/TasksLength";
+import LoadingComponent from "../components/Common/LoadingComponent";
+import NoItemsFound from "../components/Common/NoItemsFound";
+import Footer from "../components/Footer";
 
 const Boards = () => {
   const [createModelVisible, setCreateModelVisible] = useState(false);
   const [updateModelVisible, setUpdateModelVisible] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
-  const [boardParams, setBoardParams] = useSearchParams();
   const { token } = useAuthProvider();
-  const { getTaskItems, setTasksData,setBoardID } = useDataProvider();
+  const { getTaskItems, setTasksData, setBoardID} =
+    useDataProvider();
+
   const navigate = useNavigate();
   const handleCreateBoardClick = useCallback(async () => {
     setCreateModelVisible(true);
     console.log("board rendered");
   }, [createModelVisible]);
 
+  const handleUpdateBoardClick = useCallback(
+    async (title: string, id: string) => {
+      setUpdateModelVisible(true);
+      setSelectedBoard(title);
+      setBoardID(id);
+    },
+    [updateModelVisible, selectedBoard]
+  );
+
   const handleBoardClick = (boardID: string) => {
-    // setBoardParams({boardID: "123"});
-    navigate(`/dashboard/boards/${boardID}`);
-    setBoardID(boardID);
-    const selectedBoard = data?.find((item) => item._id === boardID);
-    if (selectedBoard && selectedBoard?.tasks.length > 0 && token) {
-      getTaskItems(boardID, token);
-    } else {
-      setTasksData([]);
+    setTasksData(null);
+    if (boardID) {
+      const selectedBoard = data?.find((item) => item._id === boardID);
+      if (selectedBoard && selectedBoard?.tasks.length > 0 && token) {
+        getTaskItems(boardID, token);
+      } else {
+        setTasksData([]);
+      }
+      setTimeout(() => navigate(`/dashboard/boards/${boardID}`), 500);
     }
   };
-  const { data } = useDataProvider();
+  const { data, getBoardItems } = useDataProvider();
+
+  useEffect(() => {
+    getBoardItems();
+  }, []);
   return (
-    <div className="flex flex-row gap-x-16 bg-blue-100/70">
-      <SideBar />
+    <div className="flex flex-col w-full px-4 bg-blue-100">
       <div className="w-full h-screen">
-        <h1>Boards</h1>
-        <div className="grid place-content-center grid-cols-3 gap-3">
-          {data ? (
-            data.map((item) => (
-              <Button
-                onClick={() => handleBoardClick(item._id)}
-                style="p-4 bg-white rounded-xl"
-              >
-                <p>{item.title}</p>
-              </Button>
-            ))
-          ) : (
-            <p>No board found</p>
-          )}
-          <Button
+        <div className="p-4 flex flex-row items-center gap-x-2">
+          <h1 className="font-bold text-2xl text-black font-poppins">Boards</h1>
+
+          <button
             onClick={handleCreateBoardClick}
-            style="bg-primary text-white"
+            className="btn btn-active bg-white rounded-full text-xs flex flex-row  text-black btn-sm font-poppins "
           >
-            Create a new Board
-          </Button>
+            + Create a board
+          </button>
+        </div>
+        <div className="grid w-full place-content-center grid-cols-3 gap-y-3 gap-x-6 p-4">
+          {data && data.length > 0 ? (
+            data.map((item) => {
+              const { completedTasks, totalTasks, progress } = taskLength(item);
+              return (
+                <div
+                  className="group w-full relative shadow-sm"
+                  key={item._id}
+                >
+                  {" "}
+                  <Button
+                    onClick={() => handleBoardClick(item._id)}
+                    style="p-4 bg-white w-full "
+                  >
+                    <h1 className="text-lg text-black font-semibold overflow-hidden font-poppins text-left">
+                      {item.title}
+                    </h1>
+                    <div className="flex flex-row items-center mt-4 justify-between font-poppins">
+                      <p className="text-xs">Progress</p>
+                      <p className="text-xs text-right text-black font-poppins">
+                        {completedTasks}/{totalTasks}
+                      </p>
+                    </div>
+
+                    <progress
+                      className="progress progress-primary  w-full  mt-2"
+                      value={progress}
+                      max="100"
+                    ></progress>
+                  </Button>
+                  <button
+                    className="group-hover:block hidden absolute right-4 transition-all duration-300 top-4"
+                    onClick={() => handleUpdateBoardClick(item.title, item._id)}
+                  >
+                    <EditIcon fill="#000" width={15} height={15} />
+                  </button>
+                </div>
+              );
+            })
+          ) : data && data?.length === 0  ? (
+            <NoItemsFound content="No board Found" />
+          ) : (
+            <LoadingComponent content="Loading Boards" />
+          )}
         </div>
       </div>
 
@@ -68,6 +120,7 @@ const Boards = () => {
           setModelVisible={setUpdateModelVisible}
         />
       )}
+      <Footer/>
     </div>
   );
 };
