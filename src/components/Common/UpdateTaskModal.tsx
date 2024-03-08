@@ -198,7 +198,8 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
             disabled={
               initialValues.title === values.title &&
               initialValues.content === values.content &&
-              initialValues.status === values.status
+              initialValues.status === values.status &&
+              initialValues.priority === values.priority
                 ? true
                 : false
             }
@@ -206,7 +207,8 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
             style={`rounded-md text-white  ${
               initialValues.title === values.title &&
               initialValues.content === values.content &&
-              initialValues.status === values.status
+              initialValues.status === values.status &&
+              initialValues.priority === values.priority
                 ? "bg-gray-500 opacity-50"
                 : "bg-primary"
             }`}
