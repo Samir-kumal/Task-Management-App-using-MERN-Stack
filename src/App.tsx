@@ -20,7 +20,7 @@ const App = () => {
     "/profile",
     "/login",
     "/register",
-    "/verify-email/",
+    "/verify-email",
     "/",
   ];
   const shouldShowNavbarAndSidebar = !excludeRoutes.includes(location.pathname);

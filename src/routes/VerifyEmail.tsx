@@ -37,12 +37,14 @@ const VerifyEmail = () => {
   }, [isVerified]);
 
   return (
-    <div className="w-full h-lvh flex flex-row items-center  ">
-      <div className="w-full h-full flex flex-col items-center gap-y-6 mt-20 ">
-        <h1 className="text-6xl">Verify your email</h1>
-        <p className="text-black/50 flex flex-row  items-center gap-x-2">
+    <div className="w-full h-lvh flex flex-row items-center font-poppins   ">
+      <div className="w-full h-full flex flex-col px-4 items-center gap-y-6 mt-20 ">
+        <h1 className="md:text-6xl text-4xl  text-center">Verify your email</h1>
+        <p className="text-black/50 flex flex-row text-center  items-center gap-x-2">
           Check your email & click the link to activate your account
-          <img src={Email} alt="email" width={20} height={20} />
+          <br/>
+          <br/>
+          If the email is not found in your inbox, please check your spam folder
         </p>
         <img src={EmailVerify} alt="email" width={100} height={100} />
         {/* <Button style="border-2 border-primary font-bold">

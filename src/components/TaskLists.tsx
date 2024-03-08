@@ -13,7 +13,7 @@ import { useParams } from "react-router-dom";
 
 
 const TaskList = () => {
-  const { tasksData, isLoading } = useDataProvider();
+  const { tasksData } = useDataProvider();
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [createTaskModalVisible, setCreateTaskModalVisible] = useState(false);
@@ -37,7 +37,7 @@ const TaskList = () => {
       </div>
       <div className=" text-black  h-[calc(100vh-4rem)] overflow-y-scroll relative px-4 grid lg:grid-cols-3 gap-x-1 md:grid-cols-2 grid-cols-1">
         {(tasksData && tasksData.length > 0) ||
-        (tasksData?.length == 0 && !isLoading) ? (
+        (tasksData?.length == 0 ) ? (
           <>
             <div className="  bg-red-500/5 h-fit m-4 flex flex-col  px-2 justify-start rounded-xl">
               <div className="flex flex-row items-center  px-4 py-2">

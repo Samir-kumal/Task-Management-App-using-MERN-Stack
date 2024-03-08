@@ -36,7 +36,7 @@ const NavBar = () => {
           style={`flex flex-row items-center gap-x-2`}
           onClick={() => setProfileModalVisible(!profileModalVisible)}
         >
-          <p className="rounded-full text-xs  h-fit w-fit p-2 bg-primary text-white">
+          <p className="rounded-full text-xs  h-fit  min-w-8 w-fit flex flex-row items-center justify-center p-2 bg-primary text-white">
           
           {user && user.userName.includes(" ")
                   ? user?.userName[0] + " "+ user?.userName.split(" ")[1]?.[0]

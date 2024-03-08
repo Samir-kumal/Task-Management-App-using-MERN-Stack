@@ -5,6 +5,8 @@ import { Data } from "../../context/DataProvider";
 import Button from "../Button";
 import { useNavigate } from "react-router-dom";
 import taskLength from "../../helper/TasksLength";
+import LoadingComponent from "../Common/LoadingComponent";
+import NoItemsFound from "../Common/NoItemsFound";
 const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
   const navigate = useNavigate();
   const boardTitle = "font-poppins font-bold text-md font-semibold mt-1 mb-2";
@@ -20,7 +22,7 @@ const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
         </Button>
       </div>
 
-      <div className="grid lg:grid-cols-3  md:grid-cols-2  grid-cols-1 w-full rounded-4xl    justify-start gap-x-20">
+     {data && data.length > 0 ?  <div className="grid lg:grid-cols-3  md:grid-cols-2  grid-cols-1 w-full rounded-4xl    justify-start gap-x-20">
         <section className=" bg-white w-full">
           <h1 className={boardTitle}>Board Name</h1>
           {data && data.map((item) => <p key={item._id}>{item.title}</p>)}
@@ -55,7 +57,10 @@ const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
             })}
             </div>
         </section>
-      </div>
+      </div>: data && data.length === 0 ? <NoItemsFound content="No Boards" width="w-full h-20"/> : 
+      <LoadingComponent content="Loading Boards" height="h-20"/>
+      
+      }
     </section>
   );
 };

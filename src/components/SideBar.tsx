@@ -3,28 +3,25 @@ import Button from "./Button";
 import useDataProvider from "../hooks/useDataProvider";
 import ToggleIconClose from "./svgs/ToggleIconClose";
 import ToggleIconOpen from "./svgs/ToggleIconOpen";
-import CreateBoard from "./Common/CreateBoardModal";
-import UpdateBoardModal from "./Common/UpdateBoardModal";
 import useLocalStorage from "../hooks/useLocalStorage";
 import useAuthProvider from "../hooks/useAuthProvider";
-import { useLocation, useNavigate} from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import DashboardIcon from "./svgs/DashboardIcon";
 import TaskBoardsIcon from "./svgs/TaskBoardsIcon";
 import CalendarIcon from "./svgs/CalendarIcon";
 import NotificationIcon from "./svgs/NotificationIcon";
+import LoadingComponent from "./Common/LoadingComponent";
 
 const SideBar = () => {
   const [visible, setVisible] = useState(true);
-  const [createModelVisible, setCreateModelVisible] = useState(false);
-  const [updateModelVisible, setUpdateModelVisible] = useState(false);
+ 
 
   const navigate = useNavigate();
   const handleToggle = useCallback(() => {
     setVisible((previous) => !previous);
   }, [visible]);
   const { token } = useAuthProvider();
-  const { data, setBoardID, getTaskItems, setTasksData } = useDataProvider();
-  const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
+  const { data, getTaskItems, setTasksData } = useDataProvider();
   const [tasksSubMenuVisible, setTasksSubMenuVisible] = useLocalStorage(
     "tasksSubMenuVisible",
     false
@@ -42,10 +39,15 @@ const SideBar = () => {
       title: "Dashboard",
       icon: (
         <DashboardIcon
-          fill={location.pathname === "/dashboard" ? "blue" : undefined}
+          fill={
+            location.pathname && location.pathname === "/dashboard"
+              ? "blue"
+              : undefined
+          }
         />
       ),
-      tabActive: location.pathname === "/dashboard" ? true : false,
+      tabActive:
+        location.pathname && location.pathname === "/dashboard" ? true : false,
     },
     {
       id: 2,
@@ -53,10 +55,17 @@ const SideBar = () => {
       title: "Boards",
       icon: (
         <TaskBoardsIcon
-          fill={location.pathname === "/dashboard/boards" ? "blue" : undefined}
+          fill={
+            location.pathname && location.pathname === "/dashboard/boards"
+              ? "blue"
+              : undefined
+          }
         />
       ),
-      tabActive: location.pathname === "/dashboard/boards" ? true : false,
+      tabActive:
+        location.pathname && location.pathname === "/dashboard/boards"
+          ? true
+          : false,
     },
     {
       id: 3,
@@ -65,11 +74,16 @@ const SideBar = () => {
       icon: (
         <CalendarIcon
           fill={
-            location.pathname === "/dashboard/calendar" ? "blue" : undefined
+            location.pathname && location.pathname === "/dashboard/calendar"
+              ? "blue"
+              : undefined
           }
         />
       ),
-      tabActive: location.pathname === "/dashboard/calendar" ? true : false,
+      tabActive:
+        location.pathname && location.pathname === "/dashboard/calendar"
+          ? true
+          : false,
     },
     {
       id: 4,
@@ -78,6 +92,7 @@ const SideBar = () => {
       icon: (
         <NotificationIcon
           fill={
+            location.pathname &&
             location.pathname === "/dashboard/notifications"
               ? "blue"
               : undefined
@@ -85,14 +100,16 @@ const SideBar = () => {
         />
       ),
       tabActive:
-        location.pathname === "/dashboard/notifications" ? true : false,
+        location.pathname && location.pathname === "/dashboard/notifications"
+          ? true
+          : false,
     },
   ];
 
   const handleSideBarButtonClick = (alt: string) => {
     if (selectedBoardIndex) {
       setSelectedBoardIndex(null);
-      setTasksSubMenuVisible(false);
+     
     }
     if (alt !== "dashboard") {
       navigate(`/dashboard/${alt}`);
@@ -102,8 +119,8 @@ const SideBar = () => {
   };
 
   const handleBoardClick = (boardID: string) => {
+    setTasksData(null);
     if (boardID) {
-      setBoardID(boardID);
       setSelectedBoardIndex(boardID);
       const selectedBoard = data?.find((item) => item._id === boardID);
       if (selectedBoard && selectedBoard?.tasks.length > 0 && token) {
@@ -115,20 +132,20 @@ const SideBar = () => {
     }
   };
 
- 
-
   return (
     <section
-      className={` md:h-[calc(100vh-4rem)] overflow     bg-white shadow-2xl md:relative fixed bottom-0 w-fit transition-all duration-300 ${
+      className={`  md:h-100vh ${
         visible ? "lg:w-72" : "w-fit "
-      }`}
+      }  z-50 bg-white shadow-2xl md:relative fixed bottom-0 flex md:flex-col flex-row  items-center justify-center w-full transition-all duration-300 `}
     >
       <div
-        className={`overflow-hidden ${
+        className={`overflow-hidden  ${
           visible ? "lg:w-full w-fit" : " w-fit "
         }   flex lg:flex-col flex-row   justify-between h-full`}
       >
-        <div className={` lg:h-full md:h-full h-fit ${visible ? "p-5" : "p-2"}`}>
+        <div
+          className={` lg:h-full md:h-full h-fit ${visible ? "p-5" : "p-2"}`}
+        >
           <ul className="flex lg:flex-col md:flex-col flex-row gap-y-2">
             {tabData.map((item) => (
               <section
@@ -148,13 +165,15 @@ const SideBar = () => {
                       `}
                     >
                       {item.icon}
-                      {visible && <p className="">{item.title}</p>}
+                      {visible && (
+                        <p className="lg:flex md:flex hidden">{item.title}</p>
+                      )}
                     </div>
 
                     {item.id === 2 && tasksSubMenuVisible && visible && (
                       <ul className="flex flex-col mt-4   gap-y-2 w-full">
                         <li className="flex flex-col w-full gap-x-2 bg-black/5 items-start justify-start  gap-y-2">
-                          {data ? (
+                          {data && data.length > 0  ? (
                             data.map((item) => (
                               <li className="hover:bg-black/10 w-full ">
                                 <Button
@@ -170,9 +189,9 @@ const SideBar = () => {
                                 </Button>
                               </li>
                             ))
-                          ) : (
+                          ) :data && data.length === 0 ? (
                             <p className="text-black">No board found</p>
-                          )}
+                          ) : (<LoadingComponent content="" width="w-full" height="h-10"/>) }
                         </li>
                       </ul>
                     )}
@@ -181,7 +200,7 @@ const SideBar = () => {
                 {item.id === 2 && visible && (
                   <Button
                     onClick={() => setTasksSubMenuVisible(!tasksSubMenuVisible)}
-                    style={`transition-all duration-300 z-10 absolute  right-0 h-fit w-fit translate-y-4 -translate-x-4 ${
+                    style={`transition-all duration-300 z-10 absolute lg:flex md:flex hidden  right-0 h-fit w-fit translate-y-4 -translate-x-4 ${
                       tasksSubMenuVisible ? "rotate-0" : "rotate-180"
                     }`}
                   >
@@ -209,7 +228,7 @@ const SideBar = () => {
         </div>
       </div>
       <Button
-        style="absolute -right-6 h-fit w-fit  z-10 top-1/4 rounded-full"
+        style="absolute -right-6 h-fit w-fit lg:flex md:flex hidden  z-10 top-1/4 rounded-full"
         onClick={handleToggle}
       >
         {visible ? (
@@ -219,15 +238,7 @@ const SideBar = () => {
         )}
       </Button>
 
-      {createModelVisible && (
-        <CreateBoard setModelVisible={setCreateModelVisible} />
-      )}
-      {updateModelVisible && (
-        <UpdateBoardModal
-          selectedBoard={selectedBoard}
-          setModelVisible={setUpdateModelVisible}
-        />
-      )}
+     
     </section>
   );
 };

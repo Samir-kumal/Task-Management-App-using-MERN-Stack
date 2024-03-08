@@ -40,7 +40,7 @@ interface DataContextValue {
   getTaskItems: (boardID: string, token: string) => Promise<void>;
   getAllTaskItems: (token: string) => Promise<void>;
   setBoardID: (boardID: string) => void;
-  setTasksData: (tasksData: Task[]) => void;
+  setTasksData: (tasksData: Task[] | null) => void;
 }
 export interface Data {
   _id: string;
@@ -64,8 +64,8 @@ export interface childrenProps {
 export const DataContext = createContext<DataContextValue | null>(null);
 
 const DataProvider: React.FC<childrenProps> = ({ children }) => {
-  const [data, setData] = useState<Data[] | null>([]);
-  const [tasksData, setTasksData] = useState<Task[]>([]);
+  const [data, setData] = useState<Data[] | null>(null);
+  const [tasksData, setTasksData] = useState<Task[] | null>(null);
   const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [boardID, setBoardID] = useState<string>("");
   const { user, token } = useAuthProvider();
