@@ -1,9 +1,11 @@
+import Footer from "../components/Footer";
 import Main from "../components/Main";
 
 const Dashboard = () => {
   return (
-    <div className="w-full flex overflow-y-auto h-[calc(100vh-4rem)] bg-primary/5  justify-center">
+    <div className="w-full flex flex-col overflow-y-auto h-100vh bg-blue-100/50  justify-center">
       <Main />
+      <Footer/>
     </div>
   );
 };
