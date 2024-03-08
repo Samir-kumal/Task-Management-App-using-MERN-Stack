@@ -22,8 +22,8 @@ const TaskTrackRecord: React.FC<TasksProps> = ({ ...props }) => {
     doingTasksPercentage,
   } = props;
   return (
-    <section className="flex justify-center gap-x-10">
-      <div className="h-32 w-60 bg-blue-300 rounded-xl flex flex-row items-center justify-center">
+    <section className="grid w-11/12  lg:grid-cols-3 md:grid-cols-2 grid-cols-1   lg:gap-10  md:gap-6 gap-6">
+      <div className="h-32 lg:w-72 md:w-60 w-10/12 m-auto bg-blue-300 rounded-xl flex flex-row items-center justify-center">
         <CircularProgressWithLabel
           type={"success"}
           value={doingTasksPercentage ? doingTasksPercentage : 0}
@@ -34,7 +34,7 @@ const TaskTrackRecord: React.FC<TasksProps> = ({ ...props }) => {
           <h3>Ongoing task</h3>
         </div>
       </div>
-      <div className="h-32 w-60 bg-red-500/20 flex flex-row items-center justify-center rounded-xl">
+      <div className="h-32 lg:w-72 md:w-60 w-10/12 m-auto bg-red-500/20 flex flex-row items-center justify-center rounded-xl">
         <CircularProgressWithLabel
           type={"error"}
           value={todoTasksPercentage ? todoTasksPercentage : 0}
@@ -47,7 +47,7 @@ const TaskTrackRecord: React.FC<TasksProps> = ({ ...props }) => {
           <h3>Pending task</h3>
         </div>
       </div>
-      <div className="h-32 w-60 bg-green-400/90 rounded-xl flex flex-col items-center justify-center ">
+      <div className="h-32 lg:w-72 md:w-60 w-10/12 m-auto bg-green-400/90 rounded-xl flex flex-col items-center justify-center ">
         <h1 className="text-white">Task Completed</h1>
         <h1 className="text-white text-3xl font-bold">
           {doneTasks ? doneTasks?.length : 0}

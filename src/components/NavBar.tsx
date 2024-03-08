@@ -42,7 +42,7 @@ const NavBar = () => {
                   ? user?.userName[0] + " "+ user?.userName.split(" ")[1]?.[0]
                   : user?.userName[0]}
           </p>
-          <p className="text-sm">
+          <p className="text-sm md:flex hidden">
             {user?.userName}
           </p>
         </Button>

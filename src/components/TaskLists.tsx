@@ -85,7 +85,7 @@ const TaskList = () => {
           </>
         ) : (
           <div>
-            <LoadingComponent />
+            <LoadingComponent content="Loading Tasks" />
           </div>
         )}
       </div>

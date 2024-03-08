@@ -20,10 +20,10 @@ const Main = () => {
   }, []);
 
   return (
-    <div className="flex flex-row font-poppins ">
-      <div className="flex flex-col items-center  gap-y-6 mt-8">
+    <div className=" w-full flex flex-row font-poppins ">
+      <div className="w-full flex flex-col items-center  gap-y-6 mt-8">
         <TaskTrackRecord {...tasks} {...tasksPercentage} />
-        <section className="w-full flex flex-row gap-x-6 justify-between">
+        <section className="md:w-11/12 w-10/12 flex lg:flex-row md:flex-row  flex-col md:gap-x-6 gap-6 justify-between">
           <LineGraphComponent data={data} />
           <ClockComponent />
         </section>

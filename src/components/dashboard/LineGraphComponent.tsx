@@ -1,13 +1,13 @@
-import React from "react";
-import { Paper } from "@mui/material";
+import  { memo } from "react";
 import { LineChart } from "@mui/x-charts";
 import LoadingComponent from "../Common/LoadingComponent";
 import taskLength from "../../helper/TasksLength";
 import { Data } from "../../context/DataProvider";
 
-const LineGraphComponent = ({ data }: { data: Data[] | null }) => {
+const LineGraphComponent = memo(({ data }: { data: Data[] | null }) => {
+
   return (
-    <Paper className="h-fit w-full bg-white rounded-xl p-4">
+    <section className="h-fit md:w-1/2 w-full m-auto bg-white rounded-xl p-4">
       <h1 className="font-poppins font-semibold text-lg">Performance Chart</h1>
       {data ? (
         <LineChart
@@ -24,14 +24,13 @@ const LineGraphComponent = ({ data }: { data: Data[] | null }) => {
               }),
             },
           ]}
-          width={500}
           height={150}
         />
       ) : (
-        <LoadingComponent />
+        <LoadingComponent content="" />
       )}
-    </Paper>
+    </section>
   );
-};
+});
 
 export default LineGraphComponent;
