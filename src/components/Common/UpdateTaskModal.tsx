@@ -75,8 +75,8 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
   const contentInput = "border-2 p-2 h-40 my-3 border-black/30 rounded-md";
   const contentInputError = "border-2 p-2 h-40 my-3 border-red-500 rounded-md";
   return (
-    <div className="inset-0 absolute h-lvh w-lvw bg-black/40 flex flex-row justify-center">
-      <div className="lg:w-1/3 md:w-1/2 min-w-[300px] bg-white h-fit translate-y-20 rounded-lg flex flex-col  items-center">
+    <div className="inset-0 absolute h-full w-lvw bg-black/40 flex flex-row justify-center">
+      <div className="lg:w-1/3 md:w-1/2 min-w-[300px] bg-white h-fit translate-y-10 rounded-lg flex flex-col  items-center">
         <div className="flex flex-row justify-between w-full py-2 px-4  items-center">
           <h2 className="text-2xl font-bold">Update Task</h2>
           <div className="flex flex-row gap-x-2">

@@ -12,7 +12,6 @@ import { URL } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "../components/svgs/DeleteIcon";
 
-const token = localStorage.getItem("token");
 
 const UserProfile = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -22,13 +21,13 @@ const UserProfile = () => {
     message: "",
     isSuccess: false,
   });
-  const { user, logout, getUserData } = useAuthProvider();
+  const { user, logout, getUserData,token } = useAuthProvider();
   const username = user?.userName;
   const email = user?.userEmail;
   const memoisedUserData = useCallback(() => {
     getUserData();
   
-  },[getUserData]);
+  },[user]);
   useEffect(() => {
     
     memoisedUserData();

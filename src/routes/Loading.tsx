@@ -1,9 +1,10 @@
 import { Player } from "@lottiefiles/react-lottie-player";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import useAuthProvider from "../hooks/useAuthProvider";
 const Loading = () => {
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
+  const {token} = useAuthProvider();
   useEffect(() => {
     if (token) {
       setTimeout(() => {

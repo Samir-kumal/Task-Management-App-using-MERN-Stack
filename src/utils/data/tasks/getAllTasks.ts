@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { URL, UserDataProps } from "../../../context/AuthProvider";
+import { URL } from "../../../context/AuthProvider";
 
 export const getAllTasks = async(token:string, userID:string)=>{
         try {
