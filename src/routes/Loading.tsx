@@ -4,18 +4,18 @@ import { useNavigate } from "react-router-dom";
 import useAuthProvider from "../hooks/useAuthProvider";
 const Loading = () => {
   const navigate = useNavigate();
-  const {token} = useAuthProvider();
+  const { token } = useAuthProvider();
   useEffect(() => {
-    if (token) {
-      setTimeout(() => {
-        navigate("/dashboard", { replace: true });
-      }, 3000);
-    } else {
-      setTimeout(() => {
-        navigate("/login", { replace: true });
-      }, 3000);
-    }
+    const interval = setTimeout(() => {
+      if (token) {
+        navigate("/dashboard");
+      } else {
+        navigate("/login");
+      }
+    }, 3000);
+    return () => clearTimeout(interval);
   }, []);
+
   return (
     <div className="h-lvh  w-lvw bg-white flex flex-row items-center justify-center">
       <Player
