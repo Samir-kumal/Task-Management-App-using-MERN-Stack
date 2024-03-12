@@ -17,7 +17,6 @@ const TaskList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [createTaskModalVisible, setCreateTaskModalVisible] = useState(false);
-  console.log(tasksData?.length);
   const {boardID} = useParams();
 
 
