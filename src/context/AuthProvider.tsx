@@ -1,14 +1,10 @@
-import React, {
-  createContext,
-  useState,
-  useEffect,
-  useCallback,
-} from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 import useLocalStorage from "../hooks/useLocalStorage";
 import { login } from "../utils/auth/login";
 import { fetchUserData } from "../utils/data/user/fetchUserData";
 import { verifyUserEmail } from "../utils/auth/verifyUserEmail";
 import { register } from "../utils/auth/register";
+import { AxiosError } from "axios";
 
 export interface AuthContextProps {
   user: UserDataProps | null;
@@ -22,7 +18,7 @@ export interface AuthContextProps {
   loginUser: (
     email: string,
     password: string
-  ) => Promise<{ success: boolean; error: any }>;
+  ) => Promise<{ success: boolean; error: AxiosError | string }>;
   getUserData: () => void;
   isLoggedIn: boolean;
   verifyEmail: (
@@ -71,7 +67,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
     if (result?.data && result.success === true) {
       setUser(result.data);
     }
-  }, [token, user]);
+  }, [token]);
 
   // Function to register User
 
@@ -88,7 +84,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   // Function to verify User Email
 
   const verifyEmail = async (emailToken: string) => {
-    console.log("email Token",emailToken);
+    console.log("email Token", emailToken);
     const result = await verifyUserEmail(emailToken);
     return result;
   };
@@ -109,7 +105,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   useEffect(() => {
     getUserData();
-  }, [token]);
+  }, []);
   return (
     <AuthContext.Provider
       value={{
