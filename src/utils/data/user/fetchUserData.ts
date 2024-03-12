@@ -9,9 +9,13 @@ export const fetchUserData = async (token: string) => {
       const data = response.data;
       console.log(data.data);
       return { data: data.data, success: true };
-    } catch (error: AxiosError | any) {
-      console.log(error);
-      return { error: error.response.data.message, success: false };
+    } catch (error) {
+      if (error instanceof AxiosError) {
+        console.log(error);
+        return { error: error.response?.data.message, success: false };
+      } else {
+        return { error: "something Went wrong", success: false };
+      }
     }
   }
 };

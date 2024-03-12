@@ -1,4 +1,4 @@
-import { SetStateAction, useCallback, useEffect, useState } from "react";
+import { SetStateAction, useState } from "react";
 import Button from "../components/Button";
 import useAuthProvider from "../hooks/useAuthProvider";
 import ProfileIcon from "../components/svgs/ProfileIcon";
@@ -7,11 +7,10 @@ import EditIcon from "../components/svgs/EditIcon";
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import ErrorTextComponent from "../components/Common/ErrorTextComponent";
-import axios,{AxiosError} from "axios";
+import axios, { AxiosError } from "axios";
 import { URL } from "../context/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import DeleteIcon from "../components/svgs/DeleteIcon";
-
 
 const UserProfile = () => {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -21,17 +20,10 @@ const UserProfile = () => {
     message: "",
     isSuccess: false,
   });
-  const { user, logout, getUserData,token } = useAuthProvider();
+  const { user, logout, getUserData, token } = useAuthProvider();
   const username = user?.userName;
   const email = user?.userEmail;
-  const memoisedUserData = useCallback(() => {
-    getUserData();
-  
-  },[user]);
-  useEffect(() => {
-    
-    memoisedUserData();
-  }, []);
+ 
 
   //function to validate user password
   const validateUserPassword = async () => {
@@ -51,12 +43,17 @@ const UserProfile = () => {
         console.log(data);
 
         updateUserPassword();
-      } catch (error:AxiosError | any) {
-        console.log(error.response.data.message);
-        setResponseMessage({
-          message: error.response.data.message,
-          isSuccess: false,
-        });
+      } catch (error) {
+        if(error instanceof AxiosError){
+        console.log(error.response?.data.message);
+       
+        }else{
+          setResponseMessage({
+            message: "Something went wrong",
+            isSuccess: false,
+          });
+        }
+       
       }
     }
   };
@@ -83,18 +80,21 @@ const UserProfile = () => {
         });
         logout();
         setTimeout(() => {
-          navigate("/login", {replace:true});
+          navigate("/login", { replace: true });
         }, 1500);
-      } catch (error:AxiosError | any) {
-        console.log(error.response.data.message);
-        setResponseMessage({
-          message: error.response.data.message,
-          isSuccess: false,
-        });
+      } catch (error) {
+        if(error instanceof AxiosError){
+          console.log(error.response?.data.message);
+         
+          }else{
+            setResponseMessage({
+              message: "Something went wrong",
+              isSuccess: false,
+            });
+          }
       }
     }
   };
-  console.log(email, token);
 
   // function to update user name
   const updateUserName = async () => {
@@ -121,12 +121,18 @@ const UserProfile = () => {
         isSuccess: true,
       });
       getUserData();
-      
-    } catch (error:AxiosError | any) {
-      console.log(error.response.data.message);
+    } catch (error) {
+      if(error instanceof AxiosError){
+        console.log(error.response?.data.message);
+       
+        }else{
+          setResponseMessage({
+            message: "Something went wrong",
+            isSuccess: false,
+          });
+        }
     }
   };
-
 
   // function to delete user
   const deleteUser = async () => {
@@ -142,45 +148,46 @@ const UserProfile = () => {
         );
         const data = response.data;
         console.log(data);
-          alert(data.message)
+        alert(data.message);
         logout();
         setTimeout(() => {
-          navigate("/login",{replace:true});
+          navigate("/login", { replace: true });
         }, 2000);
-      } catch (error: AxiosError | any) {
-        console.log(error.response.data.message);
+      } catch (error) {
+        if(error instanceof AxiosError){
+          console.log(error.response?.data.message);
+         
+          }else{
+            setResponseMessage({
+              message: "Something went wrong",
+              isSuccess: false,
+            });
+          }
       }
     }
   };
 
-
   // formik form for user profile update
-  const {
-    values,
-    initialValues,
-    errors,
-    touched,
-    handleChange,
-    handleBlur,
-  } = useFormik({
-    initialValues: {
-      username: username && username,
-      oldPassword: "",
-      newPassword: "",
-    },
-    validationSchema: Yup.object({
-      username: Yup.string().required("Username is required"),
-      oldPassword: Yup.string().required("Password is required"),
-      newPassword: Yup.string()
-        .required("Password is required")
-        .min(8, "Password must be at least 8 characters"),
-    }),
-    onSubmit: () => {
-      console.log("submitted");
-    },
-  });
+  const { values, initialValues, errors, touched, handleChange, handleBlur } =
+    useFormik({
+      initialValues: {
+        username: username && username,
+        oldPassword: "",
+        newPassword: "",
+      },
+      validationSchema: Yup.object({
+        username: Yup.string().required("Username is required"),
+        oldPassword: Yup.string().required("Password is required"),
+        newPassword: Yup.string()
+          .required("Password is required")
+          .min(8, "Password must be at least 8 characters"),
+      }),
+      onSubmit: () => {
+        console.log("submitted");
+      },
+    });
   const options = ["Account", "Security"];
-  console.log(user);
+
   const handleClick = (index: SetStateAction<number>) => {
     console.log("clicked");
     setSelectedIndex(index);
@@ -198,10 +205,11 @@ const UserProfile = () => {
                 index === selectedIndex ? "bg-black/10" : "bg-white"
               } w-10/12 mx-2 rounded-lg flex flex-row items-center justify-center p-2 gap-x-2 text-black`}
             >
-              {index === 0 ? <ProfileIcon /> : <SecurityIcon />}   
+              {index === 0 ? <ProfileIcon /> : <SecurityIcon />}
               {item}
             </Button>
-                                            //  Change the icon based on Index.
+
+            //  Change the icon based on Index.
           ))}
         </div>
       </div>
@@ -275,7 +283,7 @@ const UserProfile = () => {
             <div className="flex w-full justify-end">
               {isFormInput && (
                 <Button
-                type="submit"
+                  type="submit"
                   onClick={() => {
                     updateUserName();
                     console.log("clicked");
@@ -396,7 +404,7 @@ const UserProfile = () => {
                   Update
                 </Button>
               )}
-              
+
               <Button
                 onClick={() => {
                   setIsFormInput(!isFormInput);

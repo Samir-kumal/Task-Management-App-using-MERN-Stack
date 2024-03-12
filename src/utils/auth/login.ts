@@ -8,9 +8,15 @@ export const login = async (email: string, password: string) => {
       password: password,
     });
     console.log(response.data.token);
-    return { success: true, error: "", data : response.data.token};
-  } catch (error: AxiosError | any) {
-    console.log(error.response.data.message);
-    return { success: false, error: error.response.data.message };
+    return { success: true, error: "", data: response.data.token };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.log(error.response?.data.message);
+      return { success: false, error: error.response?.data.message };
+    } else {
+      console.log("Something went wrong");
+      return { success: false, error: "Something went wrong" };
+
+    }
   }
 };
