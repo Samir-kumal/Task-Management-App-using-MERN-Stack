@@ -19,45 +19,46 @@ const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
         </Button>
       </div>
 
-     {data && data.length > 0 ?  <div className="grid lg:grid-cols-3  md:grid-cols-2  grid-cols-1 w-full rounded-4xl    justify-start gap-x-20">
-        <section className=" bg-white w-full">
-          <h1 className={boardTitle}>Board Name</h1>
-          {data && data.map((item) => <p key={item._id}>{item.title}</p>)}
-        </section>
-        <section className=" w-full">
-          <h1 className={boardTitle}>Created</h1>
-          {data &&
-            data.map((item) => (
-              <p  key={item._id}>{item.created.toString().split("T")[0]}</p>
-            ))}
-        </section>
-        <section className=" w-full">
-          <h1 className={boardTitle}>Task Progress</h1>
-          <div className=" flex flex-col ">
+      {data && data.length > 0 ? (
+        <div className="grid lg:grid-cols-3  md:grid-cols-2  grid-cols-1 w-full rounded-4xl    justify-start gap-x-20">
+          <section className=" bg-white w-full">
+            <h1 className={boardTitle}>Board Name</h1>
+            {data && data.map((item) => <p key={item._id}>{item.title}</p>)}
+          </section>
+          <section className=" w-full">
+            <h1 className={boardTitle}>Created</h1>
             {data &&
-            data.map((item) => {
-              const { progress } = taskLength(item);
+              data.map((item) => (
+                <p key={item._id}>{item.created.toString().split("T")[0]}</p>
+              ))}
+          </section>
+          <section className=" w-full">
+            <h1 className={boardTitle}>Task Progress</h1>
+            <div className=" flex flex-col ">
+              {data &&
+                data.map((item) => {
+                  const { progress } = taskLength(item);
 
-              // return <LinearProgressWithLabel key={item._id} value={progress} />;
-              return (
-               <div className = "flex flex-row  gap-x-2 ">
-                 <progress
-                key={item._id}
-                  className="progress progress-primary  lg:w-full w-full mt-2"
-                  value={progress}
-                  max="100"
-                ></progress>
-                <p>{Math.round(progress)}%</p>
-               </div>
-                
-              );
-            })}
+                  // return <LinearProgressWithLabel key={item._id} value={progress} />;
+                  return (
+                    <div key={item._id} className="flex flex-row  gap-x-2 ">
+                      <progress
+                        className="progress progress-primary  lg:w-full w-full mt-2"
+                        value={progress}
+                        max="100"
+                      ></progress>
+                      <p>{Math.round(progress)}%</p>
+                    </div>
+                  );
+                })}
             </div>
-        </section>
-      </div>: data && data.length === 0 ? <NoItemsFound content="No Boards" width="w-full h-20"/> : 
-      <LoadingComponent content="Loading Boards" height="h-20"/>
-      
-      }
+          </section>
+        </div>
+      ) : data && data.length === 0 ? (
+        <NoItemsFound content="No Boards" width="w-full h-20" />
+      ) : (
+        <LoadingComponent content="Loading Boards" height="h-20" />
+      )}
     </section>
   );
 };
