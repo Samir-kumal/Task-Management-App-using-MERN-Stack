@@ -14,7 +14,6 @@ import LoadingComponent from "./Common/LoadingComponent";
 
 const SideBar = () => {
   const [visible, setVisible] = useState(true);
- 
 
   const navigate = useNavigate();
   const handleToggle = useCallback(() => {
@@ -31,6 +30,9 @@ const SideBar = () => {
     null
   );
   const location = useLocation();
+  const boardListToggle = useCallback(() => {
+    setTasksSubMenuVisible((previous: boolean) => !previous);
+  }, []);
 
   const tabData = [
     {
@@ -109,7 +111,6 @@ const SideBar = () => {
   const handleSideBarButtonClick = (alt: string) => {
     if (selectedBoardIndex) {
       setSelectedBoardIndex(null);
-     
     }
     if (alt !== "dashboard") {
       navigate(`/dashboard/${alt}`);
@@ -135,7 +136,7 @@ const SideBar = () => {
   return (
     <section
       className={`  md:h-100vh ${
-        visible ? "lg:w-72" : "w-fit "
+        visible ? "md:w-72" : "w-fit "
       }  z-50 bg-white shadow-2xl md:relative fixed bottom-0 flex md:flex-col flex-row  items-center justify-center w-full transition-all duration-300 `}
     >
       <div
@@ -171,14 +172,17 @@ const SideBar = () => {
                     </div>
 
                     {item.id === 2 && tasksSubMenuVisible && visible && (
-                      <ul className="flex flex-col mt-4   gap-y-2 w-full">
+                      <ul className="md:flex hidden flex-col mt-4   gap-y-2 w-full">
                         <li className="flex flex-col w-full gap-x-2 bg-black/5 items-start justify-start  gap-y-2">
-                          {data && data.length > 0  ? (
+                          {data && data.length > 0 ? (
                             data.map((item) => (
-                              <li className="hover:bg-black/10 w-full ">
-                                <Button
+                              <div
+                                key={item._id}
+                                className="hover:bg-black/10 w-full "
+                              >
+                                <div
                                   onClick={() => handleBoardClick(item._id)}
-                                  style={`text-black text-left font-semibold ${
+                                  className={`text-black text-left font-semibold ${
                                     selectedBoardIndex === item._id
                                       ? "bg-black/10 "
                                       : ""
@@ -186,12 +190,20 @@ const SideBar = () => {
                                 >
                                   <div className="w-1 h-1 bg-black rounded-full"></div>
                                   {item.title}
-                                </Button>
-                              </li>
+                                </div>
+                              </div>
                             ))
-                          ) :data && data.length === 0 ? (
+                          ) : data && data.length === 0 ? (
                             <p className="text-black">No board found</p>
-                          ) : (<LoadingComponent content="" width="w-full" height="h-10"/>) }
+                          ) : (
+                            <div className="hidden items-center justify-center w-full md:flex">
+                              <LoadingComponent
+                                content=""
+                                width="w-full"
+                                height="h-10"
+                              />
+                            </div>
+                          )}
                         </li>
                       </ul>
                     )}
@@ -199,7 +211,7 @@ const SideBar = () => {
                 </Button>
                 {item.id === 2 && visible && (
                   <Button
-                    onClick={() => setTasksSubMenuVisible(!tasksSubMenuVisible)}
+                    onClick={boardListToggle}
                     style={`transition-all duration-300 z-10 absolute lg:flex md:flex hidden  right-0 h-fit w-fit translate-y-4 -translate-x-4 ${
                       tasksSubMenuVisible ? "rotate-0" : "rotate-180"
                     }`}
@@ -237,8 +249,6 @@ const SideBar = () => {
           <ToggleIconOpen height={30} width={30} />
         )}
       </Button>
-
-     
     </section>
   );
 };
