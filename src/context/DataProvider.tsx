@@ -16,7 +16,7 @@ interface DataContextValue {
   boardID: string;
   isLoading: boolean;
   createBoardItem: (boardName: string) => Promise<void>;
-  getBoardItems:()=> Promise<void>;
+  getBoardItems: () => Promise<void>;
   updateBoardItem: (boardID: string, boardName: string) => Promise<void>;
   deleteBoardItem: (boardID: string) => Promise<void>;
   createTaskItem: (
@@ -27,7 +27,11 @@ interface DataContextValue {
     priority: Priority,
     token: string
   ) => Promise<void>;
-  deleteTaskItem: (taskID: string, boardID:string, token: string) => Promise<void>;
+  deleteTaskItem: (
+    taskID: string,
+    boardID: string,
+    token: string
+  ) => Promise<void>;
   updateTaskItem: (
     taskID: string,
     boardID: string,
@@ -48,7 +52,7 @@ export interface Data {
   tasks: Task[];
   created: Date;
 }
-export interface Task {  
+export interface Task {
   _id: string;
   title: string;
   content: string;
@@ -96,7 +100,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
     } else {
       setData(null);
     }
-  }, [user, boardID]);
+  }, [boardID, token, user]);
   // This function updates the board and updates the state with the new board data
   const updateBoardItem = async (boardID: string, boardName: string) => {
     if (token && boardID.length > 0 && boardName) {
@@ -187,7 +191,11 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
   };
 
   // This function deletes the task and updates the state with the new task data
-  const deleteTaskItem = async (taskID: string,boardID:string, token: string) => {
+  const deleteTaskItem = async (
+    taskID: string,
+    boardID: string,
+    token: string
+  ) => {
     const result = await deleteTask(taskID, boardID, token);
     if (result?.data && result.success === true) {
       getTaskItems(boardID, token);
@@ -221,7 +229,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
     getBoardItems();
 
     getAllTaskItems();
-  }, [user, token]);
+  }, [token, user]);
 
   return (
     <DataContext.Provider
