@@ -16,14 +16,13 @@ const Boards = () => {
   const [updateModelVisible, setUpdateModelVisible] = useState(false);
   const [selectedBoard, setSelectedBoard] = useState<string | null>(null);
   const { token } = useAuthProvider();
-  const { getTaskItems, setTasksData, setBoardID} =
-    useDataProvider();
+  const { getTaskItems, setTasksData, setBoardID } = useDataProvider();
 
   const navigate = useNavigate();
   const handleCreateBoardClick = useCallback(async () => {
     setCreateModelVisible(true);
     console.log("board rendered");
-  }, [createModelVisible]);
+  }, []);
 
   const handleUpdateBoardClick = useCallback(
     async (title: string, id: string) => {
@@ -31,7 +30,7 @@ const Boards = () => {
       setSelectedBoard(title);
       setBoardID(id);
     },
-    [updateModelVisible, selectedBoard]
+    [setBoardID]
   );
 
   const handleBoardClick = (boardID: string) => {
@@ -64,15 +63,12 @@ const Boards = () => {
             + Create a board
           </button>
         </div>
-        <div className="grid w-full place-content-center grid-cols-3 gap-y-3 gap-x-6 p-4">
+        <div className="grid w-full place-content-center lg:grid-cols-3 md:grid-cols-2 gap-y-3 gap-x-6 p-4">
           {data && data.length > 0 ? (
             data.map((item) => {
               const { completedTasks, totalTasks, progress } = taskLength(item);
               return (
-                <div
-                  className="group w-full relative shadow-sm"
-                  key={item._id}
-                >
+                <div className="group w-full relative shadow-sm" key={item._id}>
                   {" "}
                   <Button
                     onClick={() => handleBoardClick(item._id)}
@@ -103,7 +99,7 @@ const Boards = () => {
                 </div>
               );
             })
-          ) : data && data?.length === 0  ? (
+          ) : data && data?.length === 0 ? (
             <NoItemsFound content="No board Found" />
           ) : (
             <LoadingComponent content="Loading Boards" />
@@ -120,7 +116,7 @@ const Boards = () => {
           setModelVisible={setUpdateModelVisible}
         />
       )}
-      <Footer/>
+      <Footer />
     </div>
   );
 };
