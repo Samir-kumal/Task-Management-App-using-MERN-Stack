@@ -26,7 +26,7 @@ const App = () => {
   const shouldShowNavbarAndSidebar = !excludeRoutes.includes(location.pathname);
 
   return (
-    <div>
+    <>
       {shouldShowNavbarAndSidebar && <NavBar />}
       <div className="flex flex-row">
         {shouldShowNavbarAndSidebar && <SideBar />}
@@ -37,7 +37,10 @@ const App = () => {
             <Route path="/dashboard/boards" element={<Boards />} />
             <Route path="/dashboard/boards/:boardID" element={<Tasks />} />
             <Route path="/dashboard/calendar" element={<Calendar />} />
-            <Route path="/dashboard/notifications" element={<Notifications />}/>
+            <Route
+              path="/dashboard/notifications"
+              element={<Notifications />}
+            />
             <Route path="/profile" element={<UserProfile />} />
           </Route>
 
@@ -47,7 +50,7 @@ const App = () => {
           <Route path="/verify-email/" element={<VerifyEmail />} />
         </Routes>
       </div>
-    </div>
+    </>
   );
 };
 

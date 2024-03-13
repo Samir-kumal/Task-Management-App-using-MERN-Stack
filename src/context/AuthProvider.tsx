@@ -40,7 +40,7 @@ export interface UserDataProps {
 export const AuthContext = createContext<AuthContextProps | null>(null);
 
 // export const URL = "http://localhost:9001";
-// export const URL = "https://backend-service-for-task-management.onrender.com";
+
 export const URL = "https://node-js-backend-task-management-app-ten.vercel.app";
 const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   const [user, setUser] = useState<UserDataProps | null>(null);
@@ -105,7 +105,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   useEffect(() => {
     getUserData();
-  }, []);
+  }, [token]);
   return (
     <AuthContext.Provider
       value={{

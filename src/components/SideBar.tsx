@@ -137,7 +137,7 @@ const SideBar = () => {
     <section
       className={`  md:h-100vh ${
         visible ? "md:w-72" : "w-fit "
-      }  z-50 bg-white shadow-2xl md:relative fixed bottom-0 flex md:flex-col flex-row  items-center justify-center w-full transition-all duration-300 `}
+      }  z-50 bg-white shadow-2xl md:relative fixed bottom-0 right-0 left-0  flex md:flex-col flex-row  items-center justify-center transition-all duration-300 `}
     >
       <div
         className={`overflow-hidden  ${
