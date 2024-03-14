@@ -100,7 +100,7 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
     } else {
       setData(null);
     }
-  }, [user,boardID, token]);
+  }, [user, token]);
   // This function updates the board and updates the state with the new board data
   const updateBoardItem = async (boardID: string, boardName: string) => {
     if (token && boardID.length > 0 && boardName) {
@@ -227,8 +227,9 @@ const DataProvider: React.FC<childrenProps> = ({ children }) => {
 
   useEffect(() => {
     getBoardItems();
-
     getAllTaskItems();
+
+    // return ()=>cancelRequest();
   }, [token, user]);
 
   return (

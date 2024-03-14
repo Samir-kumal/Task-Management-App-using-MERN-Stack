@@ -104,7 +104,13 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
   };
 
   useEffect(() => {
-    getUserData();
+    let ismounted = true;
+    if (ismounted) {
+      getUserData();
+    }
+    return ()=> {
+      ismounted = false;
+    }
   }, [token]);
   return (
     <AuthContext.Provider

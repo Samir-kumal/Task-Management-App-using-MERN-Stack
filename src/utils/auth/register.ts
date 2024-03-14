@@ -13,8 +13,11 @@ export const register = async (values: {
     });
     console.log(response.data.message);
     return { message: response.data.message, success: true };
-  } catch (error: AxiosError | any) {
-    console.log(error.response.data.message);
-    return { message: error.response.data.message, success: false };
+  } catch (error) {
+    if (error instanceof AxiosError) {
+      console.log(error.response?.data.message);
+      return { message: error.response?.data.message, success: false };
+    }
+    return { message: "Error while registering the user", success: false };
   }
 };

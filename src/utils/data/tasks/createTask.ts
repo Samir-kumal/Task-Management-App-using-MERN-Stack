@@ -26,8 +26,14 @@ export const createTask = async (
       const data = response.data;
       return {data, status: response.status, success: true};
     }
-  } catch (error:AxiosError | any) {
-    console.log(error);
-    return {error, status:error.response.status, success: false};
+  }   catch (error) {
+    if (error instanceof AxiosError){
+      console.log("error response", error.response);
+      console.log("error status", error.response?.status);
+    return {error, status:error.response?.status, success: false};
+
+    }else {
+      return {error, status: 500, success: false};
+    }
   }
 };
