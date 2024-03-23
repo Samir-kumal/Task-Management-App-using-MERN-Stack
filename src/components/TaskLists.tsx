@@ -3,7 +3,6 @@ import TaskBox from "./Common/TaskBox";
 import useDataProvider from "../hooks/useDataProvider";
 import UpdateTaskModal from "./Common/UpdateTaskModal";
 
-import Button from "./Button";
 import TaskModal from "./Common/TaskModal";
 import useFetchAllTasks from "../hooks/useFetchAllTasks";
 import LoadingComponent from "./Common/LoadingComponent";
