@@ -29,10 +29,18 @@ const TaskList = () => {
 
   return (
     <div className="flex flex-col w-full  p-4 font-poppins">
-      <div className="px-8">
+      <div className="px-8 flex gap-x-2">
         <h1 className="text-2xl text-black font-semibold font-poppins">
           Task Lists
         </h1>
+        <button
+             onClick={() =>
+              setCreateTaskModalVisible(!createTaskModalVisible)
+            }
+            className="btn btn-active bg-white rounded-full text-xs flex flex-row  text-black btn-sm font-poppins "
+          >
+            + Add a Task
+          </button>
       </div>
       <div className=" text-black  h-[calc(100vh-4rem)] overflow-y-scroll relative px-4 grid lg:grid-cols-3 gap-x-1 md:grid-cols-2 grid-cols-1">
         {(tasksData && tasksData.length > 0) ||
@@ -48,14 +56,7 @@ const TaskList = () => {
               {todoTasks?.map((task: Task) => (
                 <TaskBox handleClick={handleClick} key={task._id} task={task} />
               ))}
-              <Button
-                onClick={() =>
-                  setCreateTaskModalVisible(!createTaskModalVisible)
-                }
-                style="shadow-xl rounded-xl bg-primary text-white"
-              >
-                + Add task
-              </Button>
+           
             </div>
             <div className="bg-yellow-500/5 h-fit  m-4 flex flex-col  px-2 justify-start rounded-xl">
               <div className="flex flex-row items-center  px-4 py-2">
