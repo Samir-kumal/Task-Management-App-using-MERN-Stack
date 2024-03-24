@@ -63,6 +63,7 @@ const AuthProvider: React.FC<AuthProps> = ({ children }) => {
 
   // Function to get user data
   const getUserData = useCallback(async () => {
+    setUser(null);
     const result = await fetchUserData(token);
     if (result?.data && result.success === true) {
       setUser(result.data);
