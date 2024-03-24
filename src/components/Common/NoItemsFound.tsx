@@ -13,7 +13,7 @@ const NoItemsFound: React.FC<NoItemsFoundProps> = memo(
           height ? height : "h-[50vh]"
         }  flex items-center justify-center`}
       >
-        <p className="font-poppins font-semibold">{content}</p>
+        <p className="font-poppins font-semibold opacity-50">{content}</p>
       </div>
     );
   }

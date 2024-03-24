@@ -56,18 +56,20 @@ const Boards = () => {
         <div className="p-4 flex flex-row items-center gap-x-2">
           <h1 className="font-bold text-2xl text-black font-poppins">Boards</h1>
 
-          <button
-            onClick={handleCreateBoardClick}
-            className="btn btn-active bg-white rounded-full text-xs flex flex-row  text-black btn-sm font-poppins "
-          >
-            + Create a board
-          </button>
+          {data && data?.length > 0 && (
+            <button
+              onClick={handleCreateBoardClick}
+              className="btn btn-active bg-white rounded-full text-xs flex flex-row  text-black btn-sm font-poppins "
+            >
+              + Create a board
+            </button>
+          )}
         </div>
-        <div className="grid w-full place-content-center lg:grid-cols-3 md:grid-cols-2 gap-y-3 gap-x-6 p-4">
-          {data && data.length > 0 ? (
-            data.map((item) => {
-              const { completedTasks, totalTasks, progress } = taskLength(item);
-              return (
+        {data && data.length > 0 ? (
+          data.map((item) => {
+            const { completedTasks, totalTasks, progress } = taskLength(item);
+            return (
+              <div className="grid w-full place-content-center lg:grid-cols-3 md:grid-cols-2 gap-y-3 gap-x-6 p-4">
                 <div className="group w-full relative shadow-sm" key={item._id}>
                   {" "}
                   <Button
@@ -97,14 +99,22 @@ const Boards = () => {
                     <EditIcon fill="#000" width={15} height={15} />
                   </button>
                 </div>
-              );
-            })
-          ) : data && data?.length === 0 ? (
-            <NoItemsFound content="No board Found" />
-          ) : (
-            <LoadingComponent content="Loading Boards" />
-          )}
-        </div>
+              </div>
+            );
+          })
+        ) : data && data?.length === 0 ? (
+          <div className="h-fit flex flex-col items-center w-10/12 ">
+            <NoItemsFound
+              content="No boards Found create your first board"
+              height="h-32"
+            />
+            <Button onClick={handleCreateBoardClick} style="btn bg-primary btn-md text-white">
+              + Create a board
+            </Button>
+          </div>
+        ) : (
+          <LoadingComponent content="Loading Boards" />
+        )}
       </div>
 
       {createModelVisible && (

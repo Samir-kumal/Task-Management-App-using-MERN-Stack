@@ -13,7 +13,7 @@ const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
   return (
     <section className="md:w-11/12 w-10/12 h-fit rounded-xl bg-white p-4 ">
       <div className="flex flex-row items-center justify-between">
-        <h1 className="font-poppins font-bold text-xl">Task</h1>
+        <h1 className="font-poppins font-bold text-xl">Boards</h1>
         <Button onClick={handleClick} style="btn bg-primary btn-sm text-white">
           View All
         </Button>
@@ -55,7 +55,19 @@ const TaskProgressComponent = ({ data }: { data: Data[] | null }) => {
           </section>
         </div>
       ) : data && data.length === 0 ? (
-        <NoItemsFound content="No Boards" width="w-full h-20" />
+        <div className="flex flex-col ">
+          <NoItemsFound
+            content="No Boards found Click  below to create one"
+            width="w-full"
+            height="h-20"
+          />
+          <button
+            onClick={handleClick}
+            className=" btn bg-primaryColor text-white mx-auto w-fit"
+          >
+            Go to boards
+          </button>
+        </div>
       ) : (
         <LoadingComponent content="Loading Boards" height="h-20" />
       )}
