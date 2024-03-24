@@ -6,6 +6,7 @@ import TaskProgressComponent from "./dashboard/TaskProgressComponent";
 import TaskTrackRecord from "./dashboard/TaskTrackRecord";
 import ClockComponent from "./dashboard/ClockComponent";
 import LineGraphComponent from "./dashboard/LineGraphComponent";
+import HighPriorityTasks from "./dashboard/HighPriorityTasks";
 
 const Main = () => {
   const { getAllTaskItems, data, getBoardItems } = useDataProvider();
@@ -25,7 +26,10 @@ const Main = () => {
         <TaskTrackRecord {...tasks} {...tasksPercentage} />
         <section className="md:w-11/12 w-10/12 flex lg:flex-row md:flex-row  flex-col md:gap-x-6 gap-6 justify-between">
           <LineGraphComponent data={data} />
-          <ClockComponent />
+          <div className="w-fit h-52  flex gap-x-3">
+            <HighPriorityTasks />
+            <ClockComponent />
+          </div>
         </section>
         <TaskProgressComponent data={data} />
       </div>
