@@ -112,6 +112,9 @@ const SideBar = () => {
     if (selectedBoardIndex) {
       setSelectedBoardIndex(null);
     }
+    if( alt !== "boards"){
+      setTasksSubMenuVisible(false);
+    }
     if (alt !== "dashboard") {
       navigate(`/dashboard/${alt}`);
     } else {
@@ -175,7 +178,7 @@ const SideBar = () => {
                       <ul className="md:flex hidden flex-col mt-4   gap-y-2 w-full">
                         <li className="flex flex-col w-full gap-x-2 bg-black/5 items-start justify-start  gap-y-2">
                           {data && data.length > 0 ? (
-                            data.map((item) => (
+                            data.slice(0, 5).map((item) => (
                               <div
                                 key={item._id}
                                 className="hover:bg-black/10 w-full "
@@ -203,6 +206,11 @@ const SideBar = () => {
                                 height="h-10"
                               />
                             </div>
+                          )}
+                          {data && data.length > 5 && (
+                            <button className=" btn-xs mx-8 bg-primary text-white">
+                              show all
+                            </button>
                           )}
                         </li>
                       </ul>
