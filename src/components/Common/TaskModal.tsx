@@ -11,13 +11,11 @@ interface TaskModalProps {
 export enum Priority {
   Low = "low",
   Normal = "normal",
-  High = "high"
+  High = "high",
 }
 const TaskModal: React.FC<TaskModalProps> = ({ setModalVisible, boardID }) => {
   const { createTaskItem } = useDataProvider();
   const { token } = useAuthProvider();
-
-
 
   const {
     values,
@@ -36,8 +34,8 @@ const TaskModal: React.FC<TaskModalProps> = ({ setModalVisible, boardID }) => {
     },
     onSubmit: (values) => {
       // createBoard(values.title);
-      console.log("boardID", boardID );
-      if ( boardID && token) {
+      console.log("boardID", boardID);
+      if (boardID && token) {
         createTaskItem(
           boardID,
           values.title,
@@ -62,10 +60,14 @@ const TaskModal: React.FC<TaskModalProps> = ({ setModalVisible, boardID }) => {
   };
   const titleInput = "border-2 p-2 my-3 border-black/30 rounded-md bg-white";
   const titleInputError = "border-2 p-2 my-3 border-red-500 rounded-md";
-  const contentInput = "border-2 p-2 h-40 my-3 border-black/30 rounded-md bg-white";
+  const contentInput =
+    "border-2 p-2 h-40 my-3 border-black/30 rounded-md bg-white";
   const contentInputError = "border-2 p-2 h-40 my-3 border-red-500 rounded-md";
   return (
-    <div data-theme = "light" className="inset-0 z-10 absolute h-lvh w-lvw bg-black/40 flex flex-row justify-center">
+    <div
+      data-theme="light"
+      className="inset-0 z-10 absolute h-lvh w-lvw bg-black/40 flex flex-row justify-center"
+    >
       <div className="lg:w-1/3 md:w-1/2 z-20 min-w-[260px] bg-white h-fit translate-y-10 rounded-lg flex flex-col  items-center">
         <div className="flex flex-row justify-between w-full py-2 px-4  items-center">
           <h2 className="text-2xl font-bold">Add New Task</h2>
@@ -120,37 +122,41 @@ const TaskModal: React.FC<TaskModalProps> = ({ setModalVisible, boardID }) => {
 
           <div className="flex flex-row justify-center  gap-x-2">
             <button
-            type="button"
-            name="priority"
-
+              type="button"
+              name="priority"
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.Low)}
               className={`${
-                values.priority === "low" ? "btn-active" : "btn-outline"
+                values.priority === "low"
+                  ? "btn-active text-white"
+                  : "btn-outline"
               }  btn btn-success`}
             >
               Low
             </button>
             <button
-            type="button"
+              type="button"
               name="priority"
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.Normal)}
               className={` ${
-                values.priority === "normal" ? "btn-active" : "btn-outline"
+                values.priority === "normal"
+                  ? "btn-active text-white"
+                  : "btn-outline"
               }  btn  btn-info`}
             >
               Normal
             </button>
             <button
-            type="button"
-            name="priority"
-
+              type="button"
+              name="priority"
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.High)}
               className={` ${
-                values.priority === "high" ? "btn-active" : "btn-outline"
-              } btn btn-outline btn-error`}
+                values.priority === "high"
+                  ? "btn-active text-white"
+                  : "btn-outline"
+              } btn  btn-error`}
             >
               High
             </button>

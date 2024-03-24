@@ -15,7 +15,7 @@ interface TaskModalProps {
 const UpdateTaskModal: React.FC<TaskModalProps> = ({
   setModalVisible,
   selectedTask,
-  boardID
+  boardID,
 }) => {
   const { deleteTaskItem, updateTaskItem } = useDataProvider();
   const { token } = useAuthProvider();
@@ -62,7 +62,7 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
   });
   const handleTaskDelete = () => {
     if (selectedTask?._id && token) {
-      deleteTaskItem(selectedTask._id,boardID, token);
+      deleteTaskItem(selectedTask._id, boardID, token);
     }
     setModalVisible(false);
   };
@@ -142,7 +142,9 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.Low)}
               className={`${
-                values.priority === "low" ? "btn-active" : "btn-outline"
+                values.priority === "low"
+                  ? "btn-active text-white"
+                  : "btn-outline"
               }  btn btn-success`}
             >
               Low
@@ -153,7 +155,9 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.Normal)}
               className={` ${
-                values.priority === "normal" ? "btn-active" : "btn-outline"
+                values.priority === "normal"
+                  ? "btn-active text-white"
+                  : "btn-outline"
               }  btn  btn-info`}
             >
               Normal
@@ -164,8 +168,10 @@ const UpdateTaskModal: React.FC<TaskModalProps> = ({
               onBlur={handleBlur}
               onClick={() => handleButtonClick(Priority.High)}
               className={` ${
-                values.priority === "high" ? "btn-active" : "btn-outline"
-              } btn btn-outline btn-error`}
+                values.priority === "high"
+                  ? "btn-active text-white"
+                  : "btn-outline"
+              } btn  btn-error`}
             >
               High
             </button>
