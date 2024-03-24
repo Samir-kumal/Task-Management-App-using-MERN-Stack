@@ -11,14 +11,15 @@ const HighPriorityTasks = () => {
       <h2 className="font-bold my-2 text-lg text-red-500">
         High Priority Tasks
       </h2>
-      <div className=" h-36 overflow-y-scroll flex flex-col gap-y-3 overflow-scroll">
+      <div className=" h-36 overflow-y-scroll flex flex-col gap-y-3 overflow-scroll scroll">
         {highPriorityTasks && highPriorityTasks?.length > 0 ? (
           highPriorityTasks?.map((task: Task) => (
             <div
-              className="bg-red-100 border-2 border-red-400 rounded-md  p-2"
+              className="bg-red-100 flex items-center gap-x-2   rounded-md  p-2"
               key={task._id}
             >
-              <h3>{task.title}</h3>
+              <div className="h-2 w-2 rounded-full bg-red-500"></div>
+              <h3 className="text-xs line-clamp-1"> {task.title}</h3>
               {/* <p className="text-xs text-gray-400 line-clamp-1">
                 {task.content}
               </p> */}

@@ -51,8 +51,8 @@ const Boards = () => {
     getBoardItems();
   }, []);
   return (
-    <div className="flex flex-col w-full px-4 bg-blue-100">
-      <div className="w-full h-screen">
+    <div className="flex flex-col w-full h-fit  px-4 bg-blue-100">
+      <div className="w-full h-fit ">
         <div className="p-4 flex flex-row items-center gap-x-2">
           <h1 className="font-bold text-2xl text-black font-poppins">Boards</h1>
 
@@ -65,11 +65,12 @@ const Boards = () => {
             </button>
           )}
         </div>
-        {data && data.length > 0 ? (
-          data.map((item) => {
-            const { completedTasks, totalTasks, progress } = taskLength(item);
-            return (
-              <div className="grid w-full place-content-center lg:grid-cols-3 md:grid-cols-2 gap-y-3 gap-x-6 p-4">
+        <div className="grid w-full place-content-center lg:grid-cols-3 md:grid-cols-2 gap-y-3 gap-x-6 p-4">
+          {data &&
+            data.length > 0 &&
+            data.map((item) => {
+              const { completedTasks, totalTasks, progress } = taskLength(item);
+              return (
                 <div className="group w-full relative shadow-sm" key={item._id}>
                   {" "}
                   <Button
@@ -99,22 +100,25 @@ const Boards = () => {
                     <EditIcon fill="#000" width={15} height={15} />
                   </button>
                 </div>
-              </div>
-            );
-          })
-        ) : data && data?.length === 0 ? (
+              );
+            })}
+        </div>
+
+        {data && data?.length === 0 && (
           <div className="h-fit flex flex-col items-center w-10/12 ">
             <NoItemsFound
               content="No boards Found create your first board"
               height="h-32"
             />
-            <Button onClick={handleCreateBoardClick} style="btn bg-primary btn-md text-white">
+            <Button
+              onClick={handleCreateBoardClick}
+              style="btn bg-primary btn-md text-white"
+            >
               + Create a board
             </Button>
           </div>
-        ) : (
-          <LoadingComponent content="Loading Boards" />
         )}
+        {data === null && <LoadingComponent content="Loading Boards" />}
       </div>
 
       {createModelVisible && (
