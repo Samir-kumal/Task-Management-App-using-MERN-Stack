@@ -19,9 +19,9 @@ const HighPriorityTasks = () => {
               key={task._id}
             >
               <h3>{task.title}</h3>
-              <p className="text-xs text-gray-400 line-clamp-1">
+              {/* <p className="text-xs text-gray-400 line-clamp-1">
                 {task.content}
-              </p>
+              </p> */}
             </div>
           ))
         ) : (
